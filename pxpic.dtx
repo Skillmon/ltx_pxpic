@@ -1,0 +1,839 @@
+% \iffalse meta-comment
+%
+% File: pxpic.dtx Copyright (C) 2021 Jonathan P. Spratte
+%
+% This work  may be  distributed and/or  modified under  the conditions  of the
+% LaTeX Project Public License (LPPL),  either version 1.3c  of this license or
+% (at your option) any later version.  The latest version of this license is in
+% the file:
+%
+%   http://www.latex-project.org/lppl.txt
+%
+% ------------------------------------------------------------------------------
+%
+%<*driver>^^A>>=
+\def\nameofplainTeX{plain}
+\ifx\fmtname\nameofplainTeX\else
+  \expandafter\begingroup
+\fi
+\input l3docstrip.tex
+\askforoverwritefalse
+\preamble
+
+--------------------------------------------------------------
+pxpic -- draw pixel pictures
+E-mail: jspratte@yahoo.de
+Released under the LaTeX Project Public License v1.3c or later
+See http://www.latex-project.org/lppl.txt
+--------------------------------------------------------------
+
+Copyright (C) 2021 Jonathan P. Spratte
+
+This  work may be  distributed and/or  modified under  the conditions  of the
+LaTeX Project Public License (LPPL),  either version 1.3c  of this license or
+(at your option) any later version.  The latest version of this license is in
+the file:
+
+  http://www.latex-project.org/lppl.txt
+
+This work is "maintained" (as per LPPL maintenance status) by
+  Jonathan P. Spratte.
+
+This work consists of the file  pxpic.dtx
+and the derived files           pxpic.pdf
+                                pxpic.sty
+
+\endpreamble
+% stop docstrip adding \endinput
+\postamble
+\endpostamble
+\generate{\file{pxpic.sty}{\from{pxpic.dtx}{pkg}}}
+\ifx\fmtname\nameofplainTeX
+  \expandafter\endbatchfile
+\else
+  \expandafter\endgroup
+\fi
+%
+\ProvidesFile{pxpic.dtx}[2021-01-10 v1.0 draw pixel pictures]
+\PassOptionsToPackage{full}{textcomp}
+\documentclass{l3doc}
+\RequirePackage[oldstylenums,nott]{kpfonts}
+\usepackage{pxpic}
+\input{glyphtounicode}
+\pdfgentounicode=1
+\RequirePackage{listings}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{collcell}
+\RequirePackage{xcolor}
+\RequirePackage{caption}
+\RequirePackage{microtype}
+\RequirePackage{accsupp}
+\RequirePackage{enumitem}
+\lstset
+  {
+    ,flexiblecolumns=false
+    ,basewidth=.53em
+    ,gobble=2
+    ,basicstyle=\fontfamily{jkp}\itshape
+    ,morekeywords=^^A
+      {^^A
+        \pxpic,\pxpicsetup
+      }
+    ,morecomment=[l]\%
+    ,commentstyle=\color[gray]{0.4}
+    ,literate={\{}{{\CodeSymbol\{}}{1}
+              {\}}{{\CodeSymbol\}}}{1}
+    ^^A,literate=*{<key>}{\key}{4}{<set>}{\set}{4}
+  }
+\newcommand*\CodeSymbol[1]{\textbf{#1}}
+\RequirePackage{randtext}
+\let\metaORIG\meta
+\protected\def\meta #1{\texttt{\metaORIG{#1}}}
+\renewcommand*\thefootnote{\fnsymbol{footnote}}
+\definecolor{pxpicred}{HTML}{9F393D}
+\colorlet{pxpicgrey}{black!75}
+\makeatletter
+\newcommand*\pxpicname
+  {^^A
+    \texorpdfstring
+      {^^A
+        \mbox
+          {^^A
+            \BeginAccSupp{ActualText=pxpic}^^A
+            \href{https://github.com/Skillmon/ltx_pxpic}{\pxpiclogo}^^A
+            \EndAccSupp{}^^A
+          }^^A
+      }
+      {pxpic}^^A
+  }
+\definecolor{expkvred}{HTML}{9F393D}
+\colorlet{expkvgrey}{black!75}
+\newcommand*\expkv
+  {^^A
+    \texorpdfstring
+      {^^A
+        \mbox
+          {^^A
+            \BeginAccSupp{ActualText=expkv}^^A
+            \href{https://github.com/Skillmon/tex_expkv}
+              {^^A
+                \rmfamily
+                \bfseries
+                {\color{expkvgrey}e\kern-.05em x\kern-.05em}^^A
+                \lower.493ex
+                  \hbox{{\color{expkvgrey}P}\kern-.1em{\color{expkvred}k}}^^A
+                \kern-.18em{\color{expkvred}v}^^A
+              }^^A
+            \EndAccSupp{}^^A
+          }^^A
+      }
+      {expkv}^^A
+  }
+\hypersetup{linkcolor=red!80!black,urlcolor=purple!80!black}
+\DoNotIndex{\baselineskip,\begingroup,\bgroup}
+\DoNotIndex{\csname}
+\DoNotIndex{\def,\detokenize,\dimexpr}
+\DoNotIndex{\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv,\ekvparse}
+\DoNotIndex{\ekvsetdef,\endcsname,\endgroup,\expandafter}
+\DoNotIndex{\hbox,\hskip}
+\DoNotIndex{\leavevmode,\let,\long,\lower}
+\DoNotIndex{\newcommand,\newdimen}
+\DoNotIndex{\PackageError,\protected,\ProvidesPackage}
+\DoNotIndex{\relax,\RequirePackage}
+\DoNotIndex{\@depth,\@height,\@ifdefinable,\@ifnextchar,\@ifundefined,\@width}
+\DoNotIndex{\ekv@ifempty,\ekv@name,\z@}
+\DoNotIndex{\color}
+\DoNotIndex{\vbox,\vrule}
+\@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
+\makeatother
+\newenvironment{options}[1][]
+  {%
+    \begin{description}
+      [
+        style=nextline
+        ,font=\normalfont\ttfamily
+        ,labelindent=-.5\marginparwidth
+        ,labelwidth=\dimexpr.5\marginparwidth-5pt\relax
+        ,labelsep*=5pt
+        ,leftmargin=!
+        ,#1
+      ]%
+    \renewenvironment{options}[1][]
+      {%
+        \begin{description}
+          [
+            style=nextline
+            ,font=\normalfont\ttfamily
+            ,#1
+          ]%
+      }
+      {\end{description}}%
+  }
+  {\end{description}}
+\begin{document}
+  \title
+    {^^A
+      \texorpdfstring
+        {^^A
+          \Huge
+          \mbox
+            {^^A
+              \BeginAccSupp{ActualText=pxpic}^^A
+              \href{https://github.com/Skillmon/ltx_pxpic}{\pxpiclogo}^^A
+              \EndAccSupp{}^^A
+            }^^A
+          \\[\medskipamount]
+          \Large draw pixel pictures^^A
+        }{pxpic - draw pixel pictures}^^A
+    }
+  \date{2021-01-10 v1.0}
+  \author{Jonathan P. Spratte\thanks{\protect\randomize{jspratte@yahoo.de}}}
+  \DocInput{pxpic.dtx}
+\end{document}
+%</driver>^^A=<<
+% \fi
+%
+% \maketitle
+% \renewcommand*\thefootnote{\arabic{footnote}}
+%
+% \begin{abstract}
+% \noindent\parfillskip=0pt
+% With \pxpicname\ you draw pictures pixel by pixels. It was inspired by a
+% \href{https://tex.stackexchange.com/a/63759/117050}
+%      {lovely post by Paulo Cereda}
+% among other things (most notably a beautiful duck) showcasing the use of
+% characters from the Mario video games by Nintendo in \LaTeX.
+% \end{abstract}
+%
+% \tableofcontents
+%
+% \begin{documentation}^^A>>=
+%
+% \section{Documentation}
+%
+% \subsection{Drawing pictures}
+%
+% \pxpicname\ supports different input modes, all of them have the same basic
+% parsing behaviour. A \meta{pixel list} contains the pixel colours. The image
+% is built line wise from top left to bottom right. Each row of pixels should be
+% a single \TeX\ argument (so either just one token, or a group delimited by
+% |{}|), and within each line each pixel in turn should be a single \TeX\
+% argument (so either just one token, or a group delimited by |{}|). Spaces and
+% hence single newlines in the sources between \meta{pixel list} elements are
+% ignored. The different modes are explained in \autoref{sec:modes}. The only
+% disallowed token in the \meta{pixel list} is the control sequence
+% \cs[no-index]{pxpic@end} (plus the usual restrictions of \TeX\ so no
+% unbalanced braces, no macros defined as \cs[no-index]{outer}).
+%
+% There is a small caveat however: \pxpicname\ draws each pixel individually,
+% and there is really no space between them, however some \textsc{pdf} viewers
+% fail to display such adjacent lines correctly and leave small gaps (basically
+% the same issue which packages like \pkg{colortbl} suffer from as well). In
+% print this shouldn't be an issue, but some rasterisation algorithms employed
+% by viewers and conversion tools have this deficit.
+%
+% \begin{function}{\pxpic}
+%   \begin{syntax}
+%     \cs{pxpic}\oarg{options}\marg{pixel list}
+%   \end{syntax}
+%   \meta{options} might be any options as listed in \autoref{sec:options}, and
+%   \meta{pixel list} is a list of pixels as described above. \cs{pxpic} parses
+%   the \meta{pixel list} and draws the corresponding picture. The result is
+%   contained in an \cs[no-index]{hbox} and can be used wherever \TeX\ expects
+%   an \cs[no-index]{hbox}. As a result, when you're in vertical mode a
+%   \cs{pxpic} will form a text line, to prevent this you can use
+%   \cs[no-index]{leavevmode} before it. The \cs{pxpic} will be bottom aligned,
+%   you can change this using \cs[no-index]{raisebox} (or, if you want, \TeX's
+%   \cs[no-index]{raise} and \cs[no-index]{lower} primitives).
+% \end{function}
+%
+% \subsubsection{Examples}
+%
+% Since the above explanation of the \meta{pixel list} syntax might've been a
+% bit cryptic, and a good documentation should contain examples (this doesn't
+% claim this documentation is \emph{good}), well, here are some examples (you
+% might need to take a look at \autoref{sec:options} and \autoref{sec:modes} to
+% fully understand the examples). Examples in this section will use the
+% following \cs[no-index]{pxpicsetup}:
+%
+% \begingroup
+% \footnotesize
+% \begin{lstlisting}
+% \pxpicsetup
+%   {
+%      mode    = px
+%     ,colours = {k=black, r=[HTML]{9F393D}, g=green!75!black, b=[rgb]{0,0,1}}
+%     ,skip    = .
+%     ,size    = 10pt
+%   }
+% \end{lstlisting}
+% \endgroup
+%
+% \begingroup
+% \pxpicsetup
+%   {
+%      mode    = px
+%     ,colours = {k=black, r=[HTML]{BF292D}, g=green!75!black, b=blue}
+%     ,skip    = .
+%     ,size    = 10pt
+%   }
+%
+% We can draw a small cross rather easily:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpic
+%   {
+%     {.k}
+%     {kkk}
+%     {.k}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic
+%   {
+%     {.k}
+%     {kkk}
+%     {.k}
+%   }
+% \end{minipage}
+%
+% A small multicoloured grid:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpic
+%   {
+%     {brgk}
+%     {kbrg}
+%     {gkbr}
+%     {rgkb}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic
+%   {
+%     {brgk}
+%     {kbrg}
+%     {gkbr}
+%     {rgkb}
+%   }
+% \end{minipage}
+%
+% A heart (shamelessly copied example from \pkg{pixelart}):\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpic
+%   {
+%     {..rr.rr}
+%     {.rrrrrrr}
+%     {rrrrrrrrr}
+%     {rrrrrrrrr}
+%     {rrrrrrrrr}
+%     {.rrrrrrr}
+%     {..rrrrr}
+%     {...rrr}
+%     {....r}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic
+%   {
+%     {..rr.rr}
+%     {.rrrrrrr}
+%     {rrrrrrrrr}
+%     {rrrrrrrrr}
+%     {rrrrrrrrr}
+%     {.rrrrrrr}
+%     {..rrrrr}
+%     {...rrr}
+%     {....r}
+%   }
+% \end{minipage}
+%
+% Using |mode=rgb| to draw a short coloured line:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpic[mode=rgb]{{{1,0,1}{1,1,0}{0,1,1}}}
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic[mode=rgb]{{{1,0,1}{1,1,0}{0,1,1}}}
+% \end{minipage}
+%
+% A multicoloured grid using skips and |mode=cmy|:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpic[mode=cmy]
+%   {
+%     {{1,0,1} {1,1,0} {0,1,1} {}     }
+%     {{}      {1,0,1} {1,1,0} {0,1,1}}
+%     {{0,1,1} {}      {1,0,1} {1,1,0}}
+%     {{1,1,0} {0,1,1} {}      {1,0,1}}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic[mode=cmy]
+%   {
+%     {{1,0,1} {1,1,0} {0,1,1} {}     }
+%     {{}      {1,0,1} {1,1,0} {0,1,1}}
+%     {{0,1,1} {}      {1,0,1} {1,1,0}}
+%     {{1,1,0} {0,1,1} {}      {1,0,1}}
+%   }
+% \end{minipage}
+%
+% Showing the difference between a skipped and a white pixel:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpicsetup{colours = {w=white}}
+% \colorbox{gray}{\pxpic{{bbb}{b.b}{bbb}}}
+% \colorbox{gray}{\pxpic{{bbb}{bwb}{bbb}}}
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \pxpicsetup{colours = {w=white}}
+% \colorbox{gray}{\pxpic{{bbb}{b.b}{bbb}}}
+% \colorbox{gray}{\pxpic{{bbb}{bwb}{bbb}}}
+% \end{minipage}
+%
+% Another example might be the definition of \cs[no-index]{pxpiclogo} in
+% \autoref{sec:implementation:pxpiclogo}.
+%
+% Who still needs \env{picture}-mode or complicated packages like
+% \pkg{pstricks} or Ti\emph{k}Z with such pretty pictures?
+%
+% \endgroup
+%
+% \subsection{Setting options}\label{sec:options}
+%
+% To control its behaviour \pxpicname\ uses a key=value interface powered by
+% \expkv. Options can be set either in the optional argument of
+% \cs[no-index]{pxpic} or with
+%
+% \begin{function}{\pxpicsetup}
+%   \begin{syntax}
+%     \cs{pxpicsetup}\marg{options}
+%   \end{syntax}
+%   Sets the \meta{options} locally to the current \TeX\ group.
+% \end{function}
+%
+% \medskip\noindent
+% Package options are not supported.
+%
+% \bigskip
+% The available options are
+%
+% \begin{options}
+%   \item[colors] Define pixel colours for |mode=px|, see \autoref{sec:colours}
+%     for a description of the value's syntax. No pixel definitions are made by
+%     the package.
+%   \item[colours] \emph{see \texttt{colors}.}
+%   \item[ht] Set the height of the pixels.
+%   \item[mode] Set the used mode, see \autoref{sec:modes} for available modes.
+%     Initial value is |px|.
+%   \item[size] Set both |ht| and |wd|. Initial value is \the\pxpicHT.
+%   \item[skip] Define the value to be a skip (an empty space of width |wd|) in
+%     |mode=px|. No skip definitions are made by the package.
+%   \item[wd] Set the width of the pixels.
+% \end{options}
+%
+% \subsubsection{Colour syntax}\label{sec:colours}
+%
+% In the value of the |colours| option you'll have to use the following syntax.
+% Use a comma separated key=value list in which each key corresponds to a new
+% pixel name for |mode=px|, and each value to the used colour. If the colour
+% starts with an opening bracket use the complete value as is behind
+% \cs[no-index]{color}, else use the whole value as the first mandatory
+% argument to \cs[no-index]{color} with a set of braces added. For example
+% to define |r| as the named colour |red|, and |x| as the colour |#abab0f| (in
+% the \textsc{html} colour model) use:
+% \begin{lstlisting}
+% colours = {r=red, x=[HTML]{abab0f}}
+% \end{lstlisting}
+%
+% \subsubsection{Available modes}\label{sec:modes}
+%
+% \begin{options}
+%   \item[px]
+%     As already mentioned, \pxpicname\ supports different modes of input. The
+%     easiest to use |mode| is |px|, in which each element of the \meta{pixel
+%     list} has been previously defined as either a coloured pixel (using the
+%     |colour| option) or as a skipped pixel (using the |skip| option, resulting
+%     in a fully transparent pixel). This is the initial mode \pxpicname\ uses.
+%     But other options are available as well.
+%   \item[named]
+%     Another |mode| is |named|, in which each element of the \meta{pixel list}
+%     should be a named colour (or colour expression) known to \pkg{xcolor}.
+%     Each element will be used like so: |{\color{|\meta{element}|}\px}|. An
+%     exception is an element which is empty (|{}|), which will be a skipped
+%     pixel.
+%   \item[rgb, cmy, cmyk, hsb, Hsb, tHsb, gray, RGB, HTML, HSB, Gray, wave]
+%     The modes |rgb|, |cmy|, |cmyk|, |hsb|, |Hsb|, |tHsb|, |gray|, |RGB|,
+%     |HTML|, |HSB|, |Gray|, and |wave| correspond to the different colour
+%     models supported by \pkg{xcolor}. With these modes each element of the
+%     \meta{pixel list} will be the values in these colour models, so they'll be
+%     used like so: |{\color[|\meta{mode}|]{|\meta{element}|}\px}|. An
+%     exception is an element which is empty (|{}|), which will be a skipped
+%     pixel.
+% \end{options}
+%
+% You can define additional modes selectable with the |mode| option using the
+% macros |\pxpicnewmode| or |\pxpicsetmode|.
+%
+% \subsection{Other customisation macros}
+%
+% \begin{function}{\pxpicnewmode,\pxpicsetmode}
+%   \begin{syntax}
+%     \cs{pxpicnewmode}\marg{name}\marg{definition}
+%   \end{syntax}
+%   You can define your own modes with \cs{pxpicnewmode}. Inside
+%   \meta{definition} |#1| is the currently parsed item in the
+%   \cs[no-index]{pxpic} pixel list. You can output a pixel using
+%   \cs[no-index]{px}, and skip a pixel using \cs[no-index]{pxskip}. The pixel
+%   will use the currently active colour (so if you want to draw a red pixel you
+%   could use |{\color{red}\px}|). \cs{pxpicnewmode} will throw an error if
+%   you try to define a mode which already exists, \cs{pxpicsetmode} has no
+%   checks on the name.
+% \end{function}
+%
+% \begin{function}{\pxpicforget}
+%   \begin{syntax}
+%     \cs{pxpicforget}\marg{px}
+%   \end{syntax}
+%   Undefines the \meta{px} definition for use in |mode=px| (or skip symbol)
+%   added with the |colours| (or |skip|) option.
+% \end{function}
+%
+% \subsection{Other macros}
+%
+% \begin{function}{\px,\pxskip}
+%   \begin{syntax}
+%     \cs{px}
+%   \end{syntax}
+%   Inside of a \cs[no-index]{pxpic} the macro \cs{px} draws a pixel (of the
+%   currently active colour), and \cs{pxskip} leaves out a pixel (so this one
+%   pixel is fully transparent). Use this in the \meta{definition} of a mode in
+%   \cs[no-index]{pxpicnewmode}.
+% \end{function}
+%
+% \begin{variable}{\pxpicHT,\pxpicWD}
+%   These two are |dimen| registers storing the height and width of the pixels.
+% \end{variable}
+%
+% \begin{function}{\pxpiclogo}
+%   \begin{syntax}
+%     \cs{pxpiclogo}\oarg{size}
+%   \end{syntax}
+%   This draws the logo of \pxpicname. The \meta{size} controls the pixel size.
+% \end{function}
+%
+% \subsection{Miscellaneous}
+%
+% If you find bugs or have suggestions I'll be glad to hear about it, you can
+% either open a ticket on Github (\url{https://github.com/Skillmon/ltx_pxpic})
+% or email me (see the first page).
+%
+%
+% \end{documentation}^^A=<<
+%
+% \begin{implementation}^^A>>=
+%
+% \gobbledocstriptag
+%<*pkg>
+%
+% \clearpage
+%
+% \section{Implementation}^^A>>=
+%
+% Report who we are
+%    \begin{macrocode}
+\ProvidesPackage{pxpic}[2021-01-10 v1.0 draw pixel pictures]
+%    \end{macrocode}
+% and load dependencies
+%    \begin{macrocode}
+\RequirePackage{xcolor}
+\RequirePackage{expkv}
+%    \end{macrocode}
+% \begin{variable}{\pxpicHT,\pxpicWD}
+%   These two variables store the height and width of a pixel.
+%    \begin{macrocode}
+\@ifdefinable\pxpicHT{\newdimen\pxpicHT}
+\@ifdefinable\pxpicWD{\newdimen\pxpicWD}
+\pxpicHT=1pt
+\pxpicWD=\pxpicHT
+%    \end{macrocode}
+% \end{variable}
+%
+%
+% \subsection{Options}
+%
+%    \begin{macrocode}
+\protected\ekvdef{pxpic}{size}
+  {\pxpicHT=\dimexpr#1\relax\pxpicWD=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{ht}{\pxpicHT=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{wd}{\pxpicWD=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{colors}{\ekvparse\pxpic@noval\pxpic@setcolor{#1}}
+\ekvletkv{pxpic}{colours}{pxpic}{colors}
+\protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
+\protected\ekvdef{pxpic}{mode}
+  {%
+    \@ifundefined{pxpic@parse@px@#1}%
+      {\pxpic@unknown@mode{#1}}%
+      {%
+        \expandafter\let\expandafter\pxpic@parse@px
+          \csname pxpic@parse@px@#1\endcsname
+      }%
+  }
+%    \end{macrocode}
+%
+%
+% \subsection{User macros}\label{sec:implementation:pxpiclogo}
+%
+% \begin{macro}{\pxpic}
+% \begin{macro}[internal]{\pxpic@}
+%    \begin{macrocode}
+\newcommand*\pxpic{\hbox\bgroup\pxpic@}
+\newcommand\pxpic@[2][]
+  {%
+    \vbox
+      {%
+        \pxpicsetup{#1}%
+        \let\px\pxpic@px
+        \let\pxskip\pxpic@skip
+        \baselineskip\pxpicHT
+        \pxpic@parse#2\pxpic@end
+      }%
+    \egroup
+  }
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\pxpicsetup}
+%    \begin{macrocode}
+\ekvsetdef\pxpicsetup{pxpic}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pxpiclogo}
+%    \begin{macrocode}
+\newcommand*\pxpiclogo[1][.13ex]
+  {%
+    \begingroup
+      \pxpicHT\dimexpr#1\relax
+      \pxpicWD\pxpicHT
+      \leavevmode
+      \lower3.2\pxpicHT\pxpic
+        [mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.]
+        {
+          {............................................g}
+          {...........................................gggg}
+          {.oooo.......................gggg...........ggg}
+          {.ooooo...oo......oo...oo....ggggg...gg......g..........g}
+          {.ooooooooooo...ooooo..oooo..ggggggggggg...ggggg...ggggggg}
+          {..ooooo..oooo.ooooooooooo....ggggg..gggg.ggggggg.ggggggggg}
+          {...oooo..oooo....ooooo........gggg..gggg...gggg..gggg.ggg}
+          {...oooo..oooo.....oooo........gggg..gggg...gggg..gggg}
+          {.oooooo..oooo.....ooooo.....gggggg..gggg...gggg..gggg}
+          {oooooooooooo...ooooooooo...gggggggggggg....gggg..ggggggggg}
+          {o.oooooooo....ooooo.oooooo.g.gggggggg......ggggg..ggggggg}
+          {...ooo.o......o.oo...oo.......ggg.g.........gg......ggg}
+          {...ooo........................ggg}
+          {...ooo........................ggg}
+          {....o..........................g}
+        }%
+    \endgroup
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pxpicforget}
+%    \begin{macrocode}
+\newcommand\pxpicforget[1]
+  {\expandafter\let\csname\ekv@name{pxpic@px}{#1}N\endcsname\pxpic@undef}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pxpicnewmode,\pxpicsetmode}
+%    \begin{macrocode}
+\protected\def\pxpicnewmode#1#2%
+  {\expandafter\newcommand\csname pxpic@parse@px@#1\endcsname[1]{#2}}
+\protected\def\pxpicsetmode#1#2%
+  {\long\expandafter\def\csname pxpic@parse@px@#1\endcsname##1{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Parser}
+%
+% \begin{macro}[internal]{\pxpic@ifend,\pxpic@ifempty}
+%    \begin{macrocode}
+\long\def\pxpic@ifend#1\pxpic@end{}
+\let\pxpic@ifempty\ekv@ifempty
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@parse,\pxpic@done}
+%    \begin{macrocode}
+\newcommand\pxpic@parse[1]
+  {%
+    \pxpic@ifend#1\pxpic@done\pxpic@end
+    \hbox{\pxpic@parseline#1\pxpic@end}%
+    \pxpic@parse
+  }
+\long\def\pxpic@done\pxpic@end\hbox#1\pxpic@parse{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@parseline,\pxpic@linedone}
+%    \begin{macrocode}
+\newcommand\pxpic@parseline[1]
+  {%
+    \pxpic@ifend#1\pxpic@linedone\pxpic@end
+    \pxpic@parse@px{#1}%
+    \pxpic@parseline
+  }
+\long\def\pxpic@linedone\pxpic@end\pxpic@parse@px#1\pxpic@parseline{}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Modes}
+%
+% \begin{macro}[internal]{\pxpic@parse@px@px,\pxpic@parse@px}
+%    \begin{macrocode}
+\newcommand\pxpic@parse@px@px[1]
+  {%
+    \ekvifdefinedNoVal{pxpic@px}{#1}
+      {\csname\ekv@name{pxpic@px}{#1}N\endcsname}%
+      {%
+        \pxpic@unknown@px{#1}%
+        \pxskip
+      }%
+  }
+\let\pxpic@parse@px\pxpic@parse@px@px
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@parse@px@named}
+%    \begin{macrocode}
+\newcommand\pxpic@parse@px@named[1]
+  {%
+    \pxpic@ifempty{#1}
+      {\pxskip}
+      {{\color{#1}\px}}%
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]
+%   {
+%     \pxpic@parse@px@rgb,
+%     \pxpic@parse@px@cmy,
+%     \pxpic@parse@px@cmyk,
+%     \pxpic@parse@px@hsb,
+%     \pxpic@parse@px@Hsb,
+%     \pxpic@parse@px@tHsb,
+%     \pxpic@parse@px@gray,
+%     \pxpic@parse@px@RGB,
+%     \pxpic@parse@px@HTML,
+%     \pxpic@parse@px@HSB,
+%     \pxpic@parse@px@Gray,
+%     \pxpic@parse@px@wave
+%   }
+%    \begin{macrocode}
+\def\pxpic@tmp#1%
+  {%
+    \pxpicnewmode{#1}%
+      {%
+        \pxpic@ifempty{##1}
+          {\pxskip}
+          {{\color[#1]{##1}\px}}%
+      }%
+  }
+\pxpic@tmp{rgb}
+\pxpic@tmp{cmy}
+\pxpic@tmp{cmyk}
+\pxpic@tmp{hsb}
+\pxpic@tmp{Hsb}
+\pxpic@tmp{tHsb}
+\pxpic@tmp{gray}
+\pxpic@tmp{RGB}
+\pxpic@tmp{HTML}
+\pxpic@tmp{HSB}
+\pxpic@tmp{Gray}
+\pxpic@tmp{wave}
+\let\pxpic@tmp\pxpic@undef
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Pixel and Skip}
+%
+% \begin{macro}[internal]{\pxpic@px,\pxpic@skip}
+%    \begin{macrocode}
+\newcommand\pxpic@px{\vrule\@height\pxpicHT\@width\pxpicWD\@depth\z@}
+\newcommand\pxpic@skip{\hskip\pxpicWD}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Parser for colours}
+%
+% \begin{macro}[internal]{\pxpic@setcolor,\pxpic@setcolor@a,\pxpic@setcolor@b}
+%    \begin{macrocode}
+\newcommand\pxpic@setcolor[2]
+  {%
+    \@ifnextchar[\pxpic@setcolor@a\pxpic@setcolor@b
+    #2]\pxpic@end
+    {#1}{#2}%
+  }
+\long\def\pxpic@setcolor@a#1\pxpic@end#2#3%
+  {\ekvdefNoVal{pxpic@px}{#2}{{\color#3\px}}}
+\long\def\pxpic@setcolor@b#1\pxpic@end#2#3%
+  {\ekvdefNoVal{pxpic@px}{#2}{{\color{#3}\px}}}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Messages}
+%
+% \begin{macro}[internal]{\pxpic@noval,\pxpic@unknown@px,\pxpic@unknown@mode}
+%   These are just some macros throwing errors, nothing special here.
+%    \begin{macrocode}
+\newcommand\pxpic@noval[1]
+  {\PackageError{pxpic}{Missing colour definition for name `\detokenize{#1}'}{}}
+\newcommand\pxpic@unknown@px[1]
+  {\PackageError{pxpic}{Unknown pixel `\detokenize{#1}'. Skipping}{}}
+\newcommand\pxpic@unknown@mode[1]
+  {\PackageError{pxpic}{Unknown mode `#1'}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+%^^A=<<
+%
+% \gobbledocstriptag
+%</pkg>
+%
+% \end{implementation}^^A=<<
+%
+% \clearpage
+% \PrintIndex
+%
+\endinput
+%
+^^A vim: ft=tex fdm=marker fmr=>>=,=<<
