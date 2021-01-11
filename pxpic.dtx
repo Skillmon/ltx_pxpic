@@ -90,6 +90,7 @@ and the derived files           pxpic.pdf
 \RequirePackage{randtext}
 \let\metaORIG\meta
 \protected\def\meta #1{\texttt{\metaORIG{#1}}}
+\newcommand*\CS{\cs[no-index]}
 \renewcommand*\thefootnote{\fnsymbol{footnote}}
 \definecolor{pxpicred}{HTML}{9F393D}
 \colorlet{pxpicgrey}{black!75}
@@ -201,7 +202,7 @@ and the derived files           pxpic.pdf
 % \noindent\parfillskip=0pt
 % With \pxpicname\ you draw pictures pixel by pixels. It was inspired by a
 % \href{https://tex.stackexchange.com/a/63759/117050}
-%      {lovely post by Paulo Cereda}
+%      {lovely post by Paulo Cereda},
 % among other things (most notably a beautiful duck) showcasing the use of
 % characters from the Mario video games by Nintendo in \LaTeX.
 % \end{abstract}
@@ -223,8 +224,8 @@ and the derived files           pxpic.pdf
 % hence single newlines in the sources between \meta{pixel list} elements are
 % ignored. The different modes are explained in \autoref{sec:modes}. The only
 % disallowed token in the \meta{pixel list} is the control sequence
-% \cs[no-index]{pxpic@end} (plus the usual restrictions of \TeX\ so no
-% unbalanced braces, no macros defined as \cs[no-index]{outer}).
+% \CS{pxpic@end} (plus the usual restrictions of \TeX\ so no unbalanced braces,
+% no macros defined as \CS{outer}).
 %
 % There is a small caveat however: \pxpicname\ draws each pixel individually,
 % and there is really no space between them, however some \textsc{pdf} viewers
@@ -240,12 +241,11 @@ and the derived files           pxpic.pdf
 %   \meta{options} might be any options as listed in \autoref{sec:options}, and
 %   \meta{pixel list} is a list of pixels as described above. \cs{pxpic} parses
 %   the \meta{pixel list} and draws the corresponding picture. The result is
-%   contained in an \cs[no-index]{hbox} and can be used wherever \TeX\ expects
-%   an \cs[no-index]{hbox}. As a result, when you're in vertical mode a
-%   \cs{pxpic} will form a text line, to prevent this you can use
-%   \cs[no-index]{leavevmode} before it. The \cs{pxpic} will be bottom aligned,
-%   you can change this using \cs[no-index]{raisebox} (or, if you want, \TeX's
-%   \cs[no-index]{raise} and \cs[no-index]{lower} primitives).
+%   contained in an \CS{hbox} and can be used wherever \TeX\ expects an
+%   \CS{hbox}. As a result, when you're in vertical mode a \cs{pxpic} will form
+%   a text line, to prevent this you can use \CS{leavevmode} before it. The
+%   \cs{pxpic} will be bottom aligned, you can change this using \CS{raisebox}
+%   (or, if you want, \TeX's \CS{raise} and \CS{lower} primitives).
 % \end{function}
 %
 % \subsubsection{Examples}
@@ -255,7 +255,7 @@ and the derived files           pxpic.pdf
 % claim this documentation is \emph{good}), well, here are some examples (you
 % might need to take a look at \autoref{sec:options} and \autoref{sec:modes} to
 % fully understand the examples). Examples in this section will use the
-% following \cs[no-index]{pxpicsetup}:
+% following \CS{pxpicsetup}:
 %
 % \begingroup
 % \footnotesize
@@ -410,7 +410,7 @@ and the derived files           pxpic.pdf
 % \colorbox{gray}{\pxpic{{bbb}{bwb}{bbb}}}
 % \end{minipage}
 %
-% Another example might be the definition of \cs[no-index]{pxpiclogo} in
+% Another example might be the definition of \CS{pxpiclogo} in
 % \autoref{sec:implementation:pxpiclogo}.
 %
 % Who still needs \env{picture}-mode or complicated packages like
@@ -422,7 +422,7 @@ and the derived files           pxpic.pdf
 %
 % To control its behaviour \pxpicname\ uses a key=value interface powered by
 % \expkv. Options can be set either in the optional argument of
-% \cs[no-index]{pxpic} or with
+% \CS{pxpic} or with
 %
 % \begin{function}{\pxpicsetup}
 %   \begin{syntax}
@@ -456,11 +456,10 @@ and the derived files           pxpic.pdf
 % In the value of the |colours| option you'll have to use the following syntax.
 % Use a comma separated key=value list in which each key corresponds to a new
 % pixel name for |mode=px|, and each value to the used colour. If the colour
-% starts with an opening bracket use the complete value as is behind
-% \cs[no-index]{color}, else use the whole value as the first mandatory
-% argument to \cs[no-index]{color} with a set of braces added. For example
-% to define |r| as the named colour |red|, and |x| as the colour |#abab0f| (in
-% the \textsc{html} colour model) use:
+% starts with an opening bracket use the complete value as is behind \CS{color},
+% else use the whole value as the first mandatory argument to \CS{color} with a
+% set of braces added. For example to define |r| as the named colour |red|, and
+% |x| as the colour |#abab0f| (in the \textsc{html} colour model) use:
 % \begin{lstlisting}
 % colours = {r=red, x=[HTML]{abab0f}}
 % \end{lstlisting}
@@ -501,13 +500,12 @@ and the derived files           pxpic.pdf
 %     \cs{pxpicnewmode}\marg{name}\marg{definition}
 %   \end{syntax}
 %   You can define your own modes with \cs{pxpicnewmode}. Inside
-%   \meta{definition} |#1| is the currently parsed item in the
-%   \cs[no-index]{pxpic} pixel list. You can output a pixel using
-%   \cs[no-index]{px}, and skip a pixel using \cs[no-index]{pxskip}. The pixel
-%   will use the currently active colour (so if you want to draw a red pixel you
-%   could use |{\color{red}\px}|). \cs{pxpicnewmode} will throw an error if
-%   you try to define a mode which already exists, \cs{pxpicsetmode} has no
-%   checks on the name.
+%   \meta{definition} |#1| is the currently parsed item in the \CS{pxpic}
+%   \meta{pixel list}. You can output a pixel using \CS{px}, and skip a pixel
+%   using \CS{pxskip}. The pixel will use the currently active colour (so if you
+%   want to draw a red pixel you could use |{\color{red}\px}|).
+%   \cs{pxpicnewmode} will throw an error if you try to define a mode which
+%   already exists, \cs{pxpicsetmode} has no checks on the name.
 % \end{function}
 %
 % \begin{function}{\pxpicforget}
@@ -524,10 +522,10 @@ and the derived files           pxpic.pdf
 %   \begin{syntax}
 %     \cs{px}
 %   \end{syntax}
-%   Inside of a \cs[no-index]{pxpic} the macro \cs{px} draws a pixel (of the
-%   currently active colour), and \cs{pxskip} leaves out a pixel (so this one
-%   pixel is fully transparent). Use this in the \meta{definition} of a mode in
-%   \cs[no-index]{pxpicnewmode}.
+%   Inside of a \CS{pxpic} the macro \cs{px} draws a pixel (of the currently
+%   active colour), and \cs{pxskip} leaves out a pixel (so this one pixel is
+%   fully transparent). Use this in the \meta{definition} of a mode in
+%   \CS{pxpicnewmode}.
 % \end{function}
 %
 % \begin{variable}{\pxpicHT,\pxpicWD}
@@ -581,14 +579,28 @@ and the derived files           pxpic.pdf
 %
 % \subsection{Options}
 %
+% We define the options using \expkv\ directly (no fancy options are involved
+% and these are just a few anyway).
+%
+% The first few options are straight forward. We use \expkv's name space to
+% actually store the |skip| and |px| definitions, hence we use
+% \CS{ekvdefNoVal} in the code of |skip|.
+%
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{size}
   {\pxpicHT=\dimexpr#1\relax\pxpicWD=\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{ht}{\pxpicHT=\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{wd}{\pxpicWD=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
+%    \end{macrocode}
+% The |colours| option is parsed using \CS{ekvparse} and \CS{pxpic@setcolor}.
+%    \begin{macrocode}
 \protected\ekvdef{pxpic}{colors}{\ekvparse\pxpic@noval\pxpic@setcolor{#1}}
 \ekvletkv{pxpic}{colours}{pxpic}{colors}
-\protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
+%    \end{macrocode}
+% And the |mode| just checks whether the |mode| macro is defined and lets the
+% auxiliary macro \CS{pxpic@parse@px} to the defined |mode|.
+%    \begin{macrocode}
 \protected\ekvdef{pxpic}{mode}
   {%
     \@ifundefined{pxpic@parse@px@#1}%
@@ -605,6 +617,13 @@ and the derived files           pxpic.pdf
 %
 % \begin{macro}{\pxpic}
 % \begin{macro}[internal]{\pxpic@}
+%   \CS{pxpic} expands directly to an opened \CS{hbox}, the auxiliary
+%   \CS{pxpic@} checks for the optional argument and inserts the rest of the
+%   code. We need to set \CS{baselineskip} to \CS{pxpicHT} so that the pixels
+%   are stacked vertically without gaps. \CS{pxpic@parse} will parse the
+%   \meta{pixel list} until \CS{pxpic@end} is hit. The final \CS{egroup} closes
+%   the \CS{hbox}. The row-wise output is done via a \CS{vbox} in which each
+%   pixel row will be wrapped inside an \CS{hbox}.
 %    \begin{macrocode}
 \newcommand*\pxpic{\hbox\bgroup\pxpic@}
 \newcommand\pxpic@[2][]
@@ -624,12 +643,18 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}{\pxpicsetup}
+%   Just directly defined to call \expkv's parser for the \pxpicname\ set.
 %    \begin{macrocode}
 \ekvsetdef\pxpicsetup{pxpic}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\pxpiclogo}
+%   The logo is just a biggish pixel picture. The \CS{lower} will move it down a
+%   bit so that it appears correctly aligned on the baseline. Since the logo
+%   should be part of a normal sentence in most usages we put \CS{leavevmode}
+%   before it. Also we make sure that the |mode| and |px| definitions are
+%   correct.
 %    \begin{macrocode}
 \newcommand*\pxpiclogo[1][.13ex]
   {%
@@ -662,6 +687,7 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}{\pxpicforget}
+%   Straight forward, just let the |px| macro to an undefined macro.
 %    \begin{macrocode}
 \newcommand\pxpicforget[1]
   {\expandafter\let\csname\ekv@name{pxpic@px}{#1}N\endcsname\pxpic@undef}
@@ -669,6 +695,8 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}{\pxpicnewmode,\pxpicsetmode}
+%   These are pretty simple as well, the |new| variant will use \CS{newcommand}
+%   which will do the testing for us, the |set| variant uses \CS{def}.
 %    \begin{macrocode}
 \protected\def\pxpicnewmode#1#2%
   {\expandafter\newcommand\csname pxpic@parse@px@#1\endcsname[1]{#2}}
@@ -680,14 +708,23 @@ and the derived files           pxpic.pdf
 %
 % \subsection{Parser}
 %
-% \begin{macro}[internal]{\pxpic@ifend,\pxpic@ifempty}
+% \begin{macro}[internal]{\pxpic@ifend,\pxpic@ifempty,\pxpic@ifbracket}
+%   These are three helper macros. The first just gobbles everything until the
+%   next \CS{pxpic@end}, and we borrow a fast test for an empty argument from
+%   \expkv. The last can be used to check for an opening bracket if used like
+%   |\pxpic@ifbracket\pxpic@end#1.\pxpic@end[]\pxpic@end|.
 %    \begin{macrocode}
 \long\def\pxpic@ifend#1\pxpic@end{}
 \let\pxpic@ifempty\ekv@ifempty
+\long\def\pxpic@ifbracket#1\pxpic@end[#2]\pxpic@end{\pxpic@ifempty{#2}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[internal]{\pxpic@parse,\pxpic@done}
+%   The parsing loop is pretty simple, first check whether we're done, else open
+%   a new \CS{hbox} (which will form a row in the \CS{vbox} placed by
+%   \CS{pxpic@}) in which the inner parsing loop is run. Then call the next
+%   iteration. If we're done just gobble the remainder of the current iteration.
 %    \begin{macrocode}
 \newcommand\pxpic@parse[1]
   {%
@@ -700,6 +737,11 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}[internal]{\pxpic@parseline,\pxpic@linedone}
+%   The line parsing loop also checks whether we're done, if not we place a
+%   pixel using the current definition of \CS{pxpic@parse@px} (which will be set
+%   by the current |mode|) and afterwards call the next iteration. If we're done
+%   we gobble the remainder of the current iteration and control goes back to
+%   \CS{pxpic@parse}.
 %    \begin{macrocode}
 \newcommand\pxpic@parseline[1]
   {%
@@ -714,7 +756,13 @@ and the derived files           pxpic.pdf
 %
 % \subsection{Modes}
 %
+% The modes define how a single element of the \meta{pixel list} is parsed.
+%
 % \begin{macro}[internal]{\pxpic@parse@px@px,\pxpic@parse@px}
+%   In the |px| mode we check whether the pixel is defined (using the name space
+%   of \expkv), if so call it, else throw an error and skip. Since this is also
+%   the initial |mode| we \CS{let} the auxiliary macro \CS{pxpic@parse@px} to
+%   this mode here.
 %    \begin{macrocode}
 \newcommand\pxpic@parse@px@px[1]
   {%
@@ -730,6 +778,8 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}[internal]{\pxpic@parse@px@named}
+%   |named| just checks whether the skip is empty. If so skip, else call
+%   \CS{color} with the element and output a pixel.
 %    \begin{macrocode}
 \newcommand\pxpic@parse@px@named[1]
   {%
@@ -755,6 +805,10 @@ and the derived files           pxpic.pdf
 %     \pxpic@parse@px@Gray,
 %     \pxpic@parse@px@wave
 %   }
+%  The colour model modes are all the same in principle. They test for an empty
+%  element to introduce a skip, else they call \CS{color} with the respective
+%  colour model and output a pixel. We use the auxiliary \CS{pxpic@tmp} to do
+%  all those definitions and undefine it afterwards.
 %    \begin{macrocode}
 \def\pxpic@tmp#1%
   {%
@@ -785,6 +839,8 @@ and the derived files           pxpic.pdf
 % \subsection{Pixel and Skip}
 %
 % \begin{macro}[internal]{\pxpic@px,\pxpic@skip}
+%   The actual definition of pixels and skips is stored in macros to which the
+%   frontend macros \CS{px} and \CS{pxskip} will be let inside of \CS{pxpic}.
 %    \begin{macrocode}
 \newcommand\pxpic@px{\vrule\@height\pxpicHT\@width\pxpicWD\@depth\z@}
 \newcommand\pxpic@skip{\hskip\pxpicWD}
@@ -795,17 +851,24 @@ and the derived files           pxpic.pdf
 % \subsection{Parser for colours}
 %
 % \begin{macro}[internal]{\pxpic@setcolor,\pxpic@setcolor@a,\pxpic@setcolor@b}
+%   First we test whether the colour starts with an opening bracket or not.
+%   Depending on that we either just put the colour after \CS{color}, or put
+%   braces around it (as it then is a colour expression for \pkg{xcolor} and
+%   just a single argument). \CS{pxpic@setcolor} defines a |px| in the name
+%   space of \expkv\ (this has a slight overhead during definition, but \expkv\
+%   is fast in checking whether one of its keys is defined or not, and reduces
+%   the amount of code in this package).
 %    \begin{macrocode}
 \newcommand\pxpic@setcolor[2]
   {%
-    \@ifnextchar[\pxpic@setcolor@a\pxpic@setcolor@b
-    #2]\pxpic@end
-    {#1}{#2}%
+    \pxpic@ifbracket\pxpic@end#2.\pxpic@end[]\pxpic@end
+      \pxpic@setcolor@a\pxpic@setcolor@b
+      {#1}{#2}%
   }
-\long\def\pxpic@setcolor@a#1\pxpic@end#2#3%
-  {\ekvdefNoVal{pxpic@px}{#2}{{\color#3\px}}}
-\long\def\pxpic@setcolor@b#1\pxpic@end#2#3%
-  {\ekvdefNoVal{pxpic@px}{#2}{{\color{#3}\px}}}
+\newcommand\pxpic@setcolor@a[2]
+  {\ekvdefNoVal{pxpic@px}{#1}{{\color{#2}\px}}}
+\newcommand\pxpic@setcolor@b[2]
+  {\ekvdefNoVal{pxpic@px}{#1}{{\color#2\px}}}
 %    \end{macrocode}
 % \end{macro}
 %
