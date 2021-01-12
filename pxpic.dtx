@@ -585,8 +585,10 @@ and the derived files           pxpic.pdf
 %     easiest to use |mode| is |px|, in which each element of the \meta{pixel
 %     list} has been previously defined as either a coloured pixel (using the
 %     |colour| option) or as a skipped pixel (using the |skip| option, resulting
-%     in a fully transparent pixel). This is the initial mode \pxpicname\ uses.
-%     But other options are available as well.
+%     in a fully transparent pixel). Each element will be \CS{detokenize}d, so
+%     (within \TeX's limitations) the name of a pixel can be arbitrary. This is
+%     the initial mode \pxpicname\ uses. But other options are available as
+%     well.
 %   \item[named]
 %     Another |mode| is |named|, in which each element of the \meta{pixel list}
 %     should be a named colour (or colour expression) known to \pkg{xcolor}.
