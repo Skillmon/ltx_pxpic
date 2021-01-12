@@ -1,4 +1,4 @@
--- Build script for expkv
+-- Build script for pxpic
 module     = "pxpic"
 pkgversion = "1.0"
 pkgdate    = "2020-01-10"
