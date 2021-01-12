@@ -46,8 +46,11 @@ uploadconfig  = {
   ctanPath    = "/graphics/pxpic",
   repository  = "https://github.com/Skillmon/ltx_pxpic",
   bugtracker  = "https://github.com/Skillmon/ltx_pxpic/issues",
-  update      = true,
+  update      = false,
   description = [[
-`pxpic` lets you draw pixel pictures.
+With `pxpic` you draw pictures pixel by pixel. It was inspired by a [lovely post
+by Paulo Cereda](https://tex.stackexchange.com/a/63759/117050), among other
+things (most notably a beautiful duck) showcasing the use of characters from the
+Mario video games by Nintendo in LaTeX.
   ]]
 }
