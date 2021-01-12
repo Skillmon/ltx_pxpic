@@ -200,7 +200,7 @@ and the derived files           pxpic.pdf
 %
 % \begin{abstract}
 % \noindent\parfillskip=0pt
-% With \pxpicname\ you draw pictures pixel by pixels. It was inspired by a
+% With \pxpicname\ you draw pictures pixel by pixel. It was inspired by a
 % \href{https://tex.stackexchange.com/a/63759/117050}
 %      {lovely post by Paulo Cereda},
 % among other things (most notably a beautiful duck) showcasing the use of
@@ -274,14 +274,14 @@ and the derived files           pxpic.pdf
 % \pxpicsetup
 %   {
 %      mode    = px
-%     ,colours = {k=black, r=[HTML]{BF292D}, g=green!75!black, b=blue}
+%     ,colours = {k=black, r=[HTML]{9F393D}, g=green!75!black, b=[rgb]{0,0,1}}
 %     ,skip    = .
 %     ,size    = 10pt
 %   }
 %
 % We can draw a small cross rather easily:\par\nobreak
 % \noindent
-% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
 % \begin{lstlisting}
 % \pxpic
 %   {
@@ -303,7 +303,7 @@ and the derived files           pxpic.pdf
 %
 % A small multicoloured grid:\par\nobreak
 % \noindent
-% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
 % \begin{lstlisting}
 % \pxpic
 %   {
@@ -327,7 +327,7 @@ and the derived files           pxpic.pdf
 %
 % A heart (shamelessly copied example from \pkg{pixelart}):\par\nobreak
 % \noindent
-% \begin{minipage}[c]{.25\linewidth}\footnotesize
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
 % \begin{lstlisting}
 % \pxpic
 %   {
@@ -408,6 +408,119 @@ and the derived files           pxpic.pdf
 % \pxpicsetup{colours = {w=white}}
 % \colorbox{gray}{\pxpic{{bbb}{b.b}{bbb}}}
 % \colorbox{gray}{\pxpic{{bbb}{bwb}{bbb}}}
+% \end{minipage}
+%
+% \enlargethispage{1.1\baselineskip}
+% A biggish example: Tux.\footnote{Source:
+% \url{https://www.reddit.com/r/linux/comments/hwpm9j/tux_pixel_art_v10/}} I
+% put two rows of pixels per code line to reduce the size a bit and the code is
+% displayed tinily.\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\tiny
+% \begin{lstlisting}
+% \pxpic
+%   [
+%      size    = 2.5pt
+%     ,colours = {:=orange,
+%                 '=black!10,
+%                 g=black!75,
+%                 O=orange!80!black}
+%   ]
+%   {
+%     {...........gggg}            {.........gggkkggg}
+%     {........ggkkkkkkkg}         {........gkkkkkkkkg}
+%     {........kkkkkkkkkk}         {.......gkk.kkkk.kkk}
+%     {.......gk.k.kk.k.kk}        {.......gk.k.kk.k.kk}
+%     {.......gkkkkkkkkkkk}        {.......gkkk::::kkkk}
+%     {.......gk::::::::kk}        {.......gk.:kkkk:kkk}
+%     {......gkk..::::'kkkk}       {......gkk....'''kkkk}
+%     {......gkk....''''kkk}       {.....gkk.....''''kkkk}
+%     {.....gk.......''''kkk}      {....gkk........'''kkkk}
+%     {....gkk........'''kkkk}     {....gk..........''kkkk}
+%     {...gkkg.........'''kkkk}    {...gkkkk........'''kkkk}
+%     {..OOOOkkk.......'''kOOOO}   {..O::::kkk......'''O:::O}
+%     {.O::::::kk.....'''::::::O}  {.O::::::kkk...''kk::::::O}
+%     {O:::::::kkk...'kkk:::::::O} {O:::::::kkk...'kkk:::::::O}
+%     {.O:::::::kkkkkkkk:::::::O}  {..OO:::::kkkkkkkk:::::OO}
+%     {....OO::O.kkkkkk.O::OO}     {......OOO........OOO}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic
+%   [
+%      size    = 2.5pt
+%     ,colours = {:=orange,
+%                 '=black!10,
+%                 g=black!75,
+%                 O=orange!80!black}
+%   ]
+%   {
+%     {...........gggg}            {.........gggkkggg}
+%     {........ggkkkkkkkg}         {........gkkkkkkkkg}
+%     {........kkkkkkkkkk}         {.......gkk.kkkk.kkk}
+%     {.......gk.k.kk.k.kk}        {.......gk.k.kk.k.kk}
+%     {.......gkkkkkkkkkkk}        {.......gkkk::::kkkk}
+%     {.......gk::::::::kk}        {.......gk.:kkkk:kkk}
+%     {......gkk..::::'kkkk}       {......gkk....'''kkkk}
+%     {......gkk....''''kkk}       {.....gkk.....''''kkkk}
+%     {.....gk.......''''kkk}      {....gkk........'''kkkk}
+%     {....gkk........'''kkkk}     {....gk..........''kkkk}
+%     {...gkkg.........'''kkkk}    {...gkkkk........'''kkkk}
+%     {..OOOOkkk.......'''kOOOO}   {..O::::kkk......'''O:::O}
+%     {.O::::::kk.....'''::::::O}  {.O::::::kkk...''kk::::::O}
+%     {O:::::::kkk...'kkk:::::::O} {O:::::::kkk...'kkk:::::::O}
+%     {.O:::::::kkkkkkkk:::::::O}  {..OO:::::kkkkkkkk:::::OO}
+%     {....OO::O.kkkkkk.O::OO}     {......OOO........OOO}
+%   }
+% \end{minipage}
+%
+% Just for Paulo, a duck. Also, showing that the colour definitions in |mode=px|
+% can be arbitrary tokens or multiple letters:\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\tiny
+% \begin{lstlisting}
+% \pxpic[colours = {oo=orange,
+%                   \ylw=yellow,
+%                   \blk=black},
+%        skip    = \skp]
+%   {
+%     {\skp\skp\skp\ylw\ylw\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\skp{oo}\ylw\blk\ylw\ylw\ylw}
+%     {{oo}{oo}{oo}\ylw\ylw\ylw\ylw\ylw}
+%     {\skp{oo}{oo}{oo}\ylw\ylw\ylw\skp\skp\skp\skp\skp\ylw}
+%     {\skp\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\skp\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\skp\ylw\ylw}
+%     {\skp\ylw\ylw\skp\ylw\ylw\ylw\ylw\skp\ylw\ylw\ylw}
+%     {\skp\ylw\ylw\ylw\skp\skp\skp\skp\ylw\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\skp\skp\skp\ylw\ylw\ylw\ylw\ylw}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \leavevmode
+% \pxpic[colours = {oo=orange,
+%                   \ylw=yellow,
+%                   \blk=black},
+%        skip    = \skp]
+%   {
+%     {\skp\skp\skp\ylw\ylw\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\skp{oo}\ylw\blk\ylw\ylw\ylw}
+%     {{oo}{oo}{oo}\ylw\ylw\ylw\ylw\ylw}
+%     {\skp{oo}{oo}{oo}\ylw\ylw\ylw\skp\skp\skp\skp\skp\ylw}
+%     {\skp\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\skp\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw\skp\ylw\ylw}
+%     {\skp\ylw\ylw\skp\ylw\ylw\ylw\ylw\skp\ylw\ylw\ylw}
+%     {\skp\ylw\ylw\ylw\skp\skp\skp\skp\ylw\ylw\ylw}
+%     {\skp\skp\ylw\ylw\ylw\ylw\ylw\ylw\ylw\ylw}
+%     {\skp\skp\skp\skp\ylw\ylw\ylw\ylw\ylw}
+%   }
 % \end{minipage}
 %
 % Another example might be the definition of \CS{pxpiclogo} in
@@ -712,7 +825,8 @@ and the derived files           pxpic.pdf
 %   These are three helper macros. The first just gobbles everything until the
 %   next \CS{pxpic@end}, and we borrow a fast test for an empty argument from
 %   \expkv. The last can be used to check for an opening bracket if used like
-%   |\pxpic@ifbracket\pxpic@end#1.\pxpic@end[]\pxpic@end|.
+%   |\pxpic@ifbracket|\hskip0pt|\pxpic@end|\hskip0pt|#1.\pxpic@end|\hskip0pt
+%   |[]\pxpic@end|.
 %    \begin{macrocode}
 \long\def\pxpic@ifend#1\pxpic@end{}
 \let\pxpic@ifempty\ekv@ifempty
