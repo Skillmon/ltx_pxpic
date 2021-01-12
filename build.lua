@@ -42,11 +42,11 @@ uploadconfig  = {
   version     = pkgversion .. " " .. pkgdate,
   license     = "lppl1.3c",
   summary     = "Draw pixel pictures",
-  topic       = "Graphics in TeX",
+  topic       = "graphics-in-tex",
   ctanPath    = "/graphics/pxpic",
   repository  = "https://github.com/Skillmon/ltx_pxpic",
   bugtracker  = "https://github.com/Skillmon/ltx_pxpic/issues",
-  update      = false,
+  update      = true,
   description = [[
 With `pxpic` you draw pictures pixel by pixel. It was inspired by a [lovely post
 by Paulo Cereda](https://tex.stackexchange.com/a/63759/117050), among other
