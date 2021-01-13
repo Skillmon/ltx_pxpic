@@ -138,6 +138,7 @@ and the derived files           pxpic.pdf
 \DoNotIndex{\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv,\ekvparse}
 \DoNotIndex{\ekvsetdef,\endcsname,\endgroup,\expandafter}
 \DoNotIndex{\hbox,\hskip}
+\DoNotIndex{\kern}
 \DoNotIndex{\leavevmode,\let,\long,\lower}
 \DoNotIndex{\newcommand,\newdimen}
 \DoNotIndex{\PackageError,\protected,\ProvidesPackage}
@@ -172,6 +173,24 @@ and the derived files           pxpic.pdf
       {\end{description}}%
   }
   {\end{description}}
+^^A the following pixelart logo is taken from that package's dtx.
+\newcommand*\pixelart
+  {^^A
+    \leavevmode
+    \pxpic[mode=px,colours={M=black},skip=.,size=.15ex]
+      {
+        {MMMMMM...MM...................MMM.....M...............M}
+        {.MM..MM..MM....................MM....MMM.............MM}
+        {.MM..MM........................MM...MM.MM............MM}
+        {.MM..MM.MMM..MM....MM..MMMMM...MM..MM...MM.MM.MMM..MMMMMM}
+        {.MMMMM...MM...MM..MM..MM...MM..MM..MM...MM..MMM.MM...MM}
+        {.MM......MM....MMMM...MMMMMMM..MM..MMMMMMM..MM..MM...MM}
+        {.MM......MM.....MM....MM.......MM..MM...MM..MM.......MM}
+        {.MM......MM....MMMM...MM.......MM..MM...MM..MM.......MM}
+        {.MM......MM...MM..MM..MM...MM..MM..MM...MM..MM.......MM.MM}
+        {MMMM....MMMM.MM....MM..MMMMM..MMMM.MM...MM.MMMM.......MMM}
+      }^^A
+  }
 \begin{document}
   \title
     {^^A
@@ -325,7 +344,7 @@ and the derived files           pxpic.pdf
 %   }
 % \end{minipage}
 %
-% A heart (shamelessly copied example from \pkg{pixelart}):\par\nobreak
+% A heart (shamelessly copied example from \pixelart):\par\nobreak
 % \noindent
 % \begin{minipage}[c]{.5\linewidth}\footnotesize
 % \begin{lstlisting}
@@ -555,6 +574,13 @@ and the derived files           pxpic.pdf
 %     for a description of the value's syntax. No pixel definitions are made by
 %     the package.
 %   \item[colours] \emph{see \texttt{colors}.}
+%   \item[gap-hack] To fix the issues with visible gaps in \textsc{pdf} viewers
+%     you can introduce some negative kerns to make the pixels overlap (lines
+%     overlap to the top, pixels to the left). This option expects a dimension
+%     as its value. A positive value will (maybe) close the gaps, a negative
+%     value will introduce real gaps. In any case the outermost pixels' borders
+%     still coincide with the borders of the surrounding \CS{hbox}. Take a look
+%     at my babbling about this issue in \autoref{sec:misc}.
 %   \item[ht] Set the height of the pixels.
 %   \item[mode] Set the used mode, see \autoref{sec:modes} for available modes.
 %     Initial value is |px|.
@@ -651,18 +677,32 @@ and the derived files           pxpic.pdf
 %   This draws the logo of \pxpicname. The \meta{size} controls the pixel size.
 % \end{function}
 %
-% \subsection{Miscellaneous}
+% \subsection{Miscellaneous}\label{sec:misc}
 %
 % If you find bugs or have suggestions I'll be glad to hear about it, you can
 % either open a ticket on Github (\url{https://github.com/Skillmon/ltx_pxpic})
 % or email me (see the first page).
 %
-% A similar package is \pkg{pixelart}, which, as of writing this, is described
-% as a ``working draft'' by its author. \pxpicname\ wasn't intended as a direct
+% A similar package is \pixelart, which, as of writing this, is described as a
+% ``working draft'' by its author. \pxpicname\ wasn't intended as a direct
 % competitor (I already started coding \pxpicname\ when I learned about
-% \pkg{pixelart}'s existence), but I took inspiration from the ``Bugs, Ideas,
-% Undefined behaviours'' section of \pkg{pixelart}'s documentation for the
-% syntax of |mode=px|.
+% \pixelart's existence), but I took inspiration from the ``Bugs, Ideas,
+% Undefined behaviours'' section of \pixelart's documentation for the syntax of
+% |mode=px|.
+%
+% \paragraph{Regarding the gap issue:}
+% The pixels are output touching each other with no real gap, however some
+% \textsc{pdf} viewers and tools will display such a gap. To make things even
+% worse, the effect depends on the viewers current magnification.
+% \pxpicname\ has the |gap-hack| option to provide some crude hack that might
+% fix the issue, at the cost that the pixels are smaller than they were
+% specified to be, except for the pixels at the right and bottom border. Also
+% pixels next to skipped pixels have a different size (skipped pixels don't
+% cover pixels to their left or top as they are transparent). You'll want to
+% find a good trade-off value if you want to use |gap-hack|, that mitigates the
+% effect but isn't too big (to make the errors less obvious). You can play with
+% the value and decide for yourself what's the lesser evil. Or you do like me,
+% don't use |gap-hack| and blame the viewers.
 %
 %
 % \end{documentation}^^A=<<
@@ -690,8 +730,17 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \@ifdefinable\pxpicHT{\newdimen\pxpicHT}
 \@ifdefinable\pxpicWD{\newdimen\pxpicWD}
-\pxpicHT=1pt
-\pxpicWD=\pxpicHT
+\pxpicHT1pt
+\pxpicWD\pxpicHT
+%    \end{macrocode}
+% \end{variable}
+% \begin{variable}[internal]{\pxpic@kern}
+%   To fix the visible gaps in some \textsc{pdf} viewers if the user chooses so
+%   with the |gap-hack| option we introduce some \CS{kern}s of the length
+%   stored in this register.
+%    \begin{macrocode}
+\@ifdefinable\pxpic@kern{\newdimen\pxpic@kern}
+\pxpic@kern\z@
 %    \end{macrocode}
 % \end{variable}
 %
@@ -707,9 +756,10 @@ and the derived files           pxpic.pdf
 %
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{size}
-  {\pxpicHT=\dimexpr#1\relax\pxpicWD=\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{ht}{\pxpicHT=\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{wd}{\pxpicWD=\dimexpr#1\relax}
+  {\pxpicHT\dimexpr#1\relax\pxpicWD\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{ht}{\pxpicHT\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{wd}{\pxpicWD\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{gap-hack}{\pxpic@kern\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
 %    \end{macrocode}
 % The |colours| option is parsed using \CS{ekvparse} and \CS{pxpic@setcolor}.
@@ -742,7 +792,8 @@ and the derived files           pxpic.pdf
 %   are stacked vertically without gaps. \CS{pxpic@parse} will parse the
 %   \meta{pixel list} until \CS{pxpic@end} is hit. The final \CS{egroup} closes
 %   the \CS{hbox}. The row-wise output is done via a \CS{vbox} in which each
-%   pixel row will be wrapped inside an \CS{hbox}.
+%   pixel row will be wrapped inside an \CS{hbox}. The \CS{kern} negates a
+%   negative \CS{kern} in \CS{pxpic@parse} so that the first line isn't moved.
 %    \begin{macrocode}
 \newcommand*\pxpic{\hbox\bgroup\pxpic@}
 \newcommand\pxpic@[2][]
@@ -753,6 +804,7 @@ and the derived files           pxpic.pdf
         \let\px\pxpic@px
         \let\pxskip\pxpic@skip
         \baselineskip\pxpicHT
+        \kern\pxpic@kern
         \pxpic@parse#2\pxpic@end
       }%
     \egroup
@@ -845,14 +897,18 @@ and the derived files           pxpic.pdf
 %   a new \CS{hbox} (which will form a row in the \CS{vbox} placed by
 %   \CS{pxpic@}) in which the inner parsing loop is run. Then call the next
 %   iteration. If we're done just gobble the remainder of the current iteration.
+%   First we introduce our \CS{kern} which might fix the gap issue. Another
+%   \CS{kern} is done at the start of each \CS{hbox} to compensate the
+%   unnecessary \CS{kern} done by the first \CS{pxpic@parseline}.
 %    \begin{macrocode}
 \newcommand\pxpic@parse[1]
   {%
     \pxpic@ifend#1\pxpic@done\pxpic@end
-    \hbox{\pxpic@parseline#1\pxpic@end}%
+    \kern-\pxpic@kern
+    \hbox{\kern\pxpic@kern\pxpic@parseline#1\pxpic@end}%
     \pxpic@parse
   }
-\long\def\pxpic@done\pxpic@end\hbox#1\pxpic@parse{}
+\long\def\pxpic@done\pxpic@end\kern-\pxpic@kern\hbox#1\pxpic@parse{}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -861,15 +917,19 @@ and the derived files           pxpic.pdf
 %   pixel using the current definition of \CS{pxpic@parse@px} (which will be set
 %   by the current |mode|) and afterwards call the next iteration. If we're done
 %   we gobble the remainder of the current iteration and control goes back to
-%   \CS{pxpic@parse}.
+%   \CS{pxpic@parse}. Before each pixel we introduce a negative \CS{kern} to
+%   maybe fix the gap issue by letting the pixels overlap a bit.
 %    \begin{macrocode}
 \newcommand\pxpic@parseline[1]
   {%
     \pxpic@ifend#1\pxpic@linedone\pxpic@end
+    \kern-\pxpic@kern
     \pxpic@parse@px{#1}%
     \pxpic@parseline
   }
-\long\def\pxpic@linedone\pxpic@end\pxpic@parse@px#1\pxpic@parseline{}
+\long\def\pxpic@linedone
+    \pxpic@end\kern-\pxpic@kern\pxpic@parse@px#1\pxpic@parseline
+  {}
 %    \end{macrocode}
 % \end{macro}
 %
