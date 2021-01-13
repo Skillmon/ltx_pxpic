@@ -191,6 +191,7 @@ and the derived files           pxpic.pdf
         {MMMM....MMMM.MM....MM..MMMMM..MMMM.MM...MM.MMMM.......MMM}
       }^^A
   }
+\pxpicsetup{gap-hack=.1pt}
 \begin{document}
   \title
     {^^A
@@ -803,9 +804,11 @@ and the derived files           pxpic.pdf
         \pxpicsetup{#1}%
         \let\px\pxpic@px
         \let\pxskip\pxpic@skip
+        \advance\pxpicHT\pxpic@kern
         \baselineskip\pxpicHT
+        \advance\pxpicWD\pxpic@kern
         \kern\pxpic@kern
-        \pxpic@parse#2\pxpic@end
+        \pxpic@parse#2\pxpic@end\pxpic@end\pxpic@gobblestop
       }%
     \egroup
   }
@@ -843,8 +846,8 @@ and the derived files           pxpic.pdf
           {.ooooooooooo...ooooo..oooo..ggggggggggg...ggggg...ggggggg}
           {..ooooo..oooo.ooooooooooo....ggggg..gggg.ggggggg.ggggggggg}
           {...oooo..oooo....ooooo........gggg..gggg...gggg..gggg.ggg}
-          {...oooo..oooo.....oooo........gggg..gggg...gggg..gggg}
-          {.oooooo..oooo.....ooooo.....gggggg..gggg...gggg..gggg}
+          {...oooo..oooo.....oooo........gggg..gggg...gggg..gggg.}
+          {.oooooo..oooo.....ooooo.....gggggg..gggg...gggg..gggg.}
           {oooooooooooo...ooooooooo...gggggggggggg....gggg..ggggggggg}
           {o.oooooooo....ooooo.oooooo.g.gggggggg......ggggg..ggggggg}
           {...ooo.o......o.oo...oo.......ggg.g.........gg......ggg}
@@ -901,14 +904,17 @@ and the derived files           pxpic.pdf
 %   \CS{kern} is done at the start of each \CS{hbox} to compensate the
 %   unnecessary \CS{kern} done by the first \CS{pxpic@parseline}.
 %    \begin{macrocode}
-\newcommand\pxpic@parse[1]
+\newcommand\pxpic@parse[2]
   {%
     \pxpic@ifend#1\pxpic@done\pxpic@end
     \kern-\pxpic@kern
-    \hbox{\kern\pxpic@kern\pxpic@parseline#1\pxpic@end}%
-    \pxpic@parse
+    \pxpic@ifend#2\@thirdofthree\pxpic@end\@gobble
+      {\kern-\pxpic@kern\advance\pxpicHT-\pxpic@kern}%
+    \hbox
+      {\kern\pxpic@kern\pxpic@parseline#1\pxpic@end\pxpic@end\pxpic@gobblestop}%
+    \pxpic@parse{#2}%
   }
-\long\def\pxpic@done\pxpic@end\kern-\pxpic@kern\hbox#1\pxpic@parse{}
+\long\def\pxpic@done#1\pxpic@gobblestop{}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -920,16 +926,16 @@ and the derived files           pxpic.pdf
 %   \CS{pxpic@parse}. Before each pixel we introduce a negative \CS{kern} to
 %   maybe fix the gap issue by letting the pixels overlap a bit.
 %    \begin{macrocode}
-\newcommand\pxpic@parseline[1]
+\newcommand\pxpic@parseline[2]
   {%
     \pxpic@ifend#1\pxpic@linedone\pxpic@end
     \kern-\pxpic@kern
+    \pxpic@ifend#2\@thirdofthree\pxpic@end\@gobble
+      {\advance\pxpicWD-\pxpic@kern}%
     \pxpic@parse@px{#1}%
-    \pxpic@parseline
+    \pxpic@parseline{#2}%
   }
-\long\def\pxpic@linedone
-    \pxpic@end\kern-\pxpic@kern\pxpic@parse@px#1\pxpic@parseline
-  {}
+\long\def\pxpic@linedone#1\pxpic@gobblestop{}
 %    \end{macrocode}
 % \end{macro}
 %
