@@ -54,7 +54,7 @@ and the derived files           pxpic.pdf
   \expandafter\endgroup
 \fi
 %
-\ProvidesFile{pxpic.dtx}[2021-01-13 v1.1 draw pixel pictures]
+\ProvidesFile{pxpic.dtx}[2021-01-13 v1.1a draw pixel pictures]
 \PassOptionsToPackage{full}{textcomp}
 \documentclass{l3doc}
 \RequirePackage[oldstylenums,nott]{kpfonts}
@@ -207,7 +207,7 @@ and the derived files           pxpic.pdf
           \Large draw pixel pictures^^A
         }{pxpic - draw pixel pictures}^^A
     }
-  \date{2021-01-13 v1.1}
+  \date{2021-01-13 v1.1a}
   \author{Jonathan P. Spratte\thanks{\protect\randomize{jspratte@yahoo.de}}}
   \DocInput{pxpic.dtx}
 \end{document}
@@ -695,14 +695,14 @@ and the derived files           pxpic.pdf
 % \textsc{pdf} viewers and tools will display such a gap. To make things even
 % worse, the effect depends on the viewers current magnification.
 % \pxpicname\ has the |gap-hack| option to provide some crude hack that might
-% fix the issue, at the cost that the pixels are smaller than they were
-% specified to be, except for the pixels at the right and bottom border. Also
-% pixels next to skipped pixels have a different size (skipped pixels don't
-% cover pixels to their left or top as they are transparent). You'll want to
-% find a good trade-off value if you want to use |gap-hack|, that mitigates the
-% effect but isn't too big (to make the errors less obvious). You can play with
-% the value and decide for yourself what's the lesser evil. Or you do like me,
-% don't use |gap-hack| and blame the viewers.
+% fix the issue, at the cost that the pixels on the far right and bottom are
+% bigger than they were specified to be. Also pixels next to skipped pixels have
+% a different size (skipped pixels don't cover pixels to their left or top as
+% they are transparent). You'll want to find a good trade-off value if you want
+% to use |gap-hack|, that mitigates the effect but isn't too big (to make the
+% errors less obvious). You can play with the value and decide for yourself
+% what's the lesser evil. Or you do like me, don't use |gap-hack| and blame the
+% viewers.
 %
 %
 % \end{documentation}^^A=<<
@@ -718,7 +718,7 @@ and the derived files           pxpic.pdf
 %
 % Report who we are
 %    \begin{macrocode}
-\ProvidesPackage{pxpic}[2021-01-13 v1.1 draw pixel pictures]
+\ProvidesPackage{pxpic}[2021-01-13 v1.1a draw pixel pictures]
 %    \end{macrocode}
 % and load dependencies
 %    \begin{macrocode}
@@ -803,6 +803,8 @@ and the derived files           pxpic.pdf
         \pxpicsetup{#1}%
         \let\px\pxpic@px
         \let\pxskip\pxpic@skip
+        \advance\pxpicHT\pxpic@kern
+        \advance\pxpicWD\pxpic@kern
         \baselineskip\pxpicHT
         \kern\pxpic@kern
         \pxpic@parse#2\pxpic@end

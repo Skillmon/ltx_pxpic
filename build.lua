@@ -1,6 +1,6 @@
 -- Build script for pxpic
 module     = "pxpic"
-pkgversion = "1.1"
+pkgversion = "1.1a"
 pkgdate    = "2021-01-13"
 
 -- update package date and version
