@@ -1,7 +1,7 @@
 -- Build script for pxpic
 module     = "pxpic"
-pkgversion = "1.0"
-pkgdate    = "2020-01-10"
+pkgversion = "1.1"
+pkgdate    = "2021-01-13"
 
 -- update package date and version
 tagfiles = {"pxpic.dtx", "README.md", "CTAN.md"}
