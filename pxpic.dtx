@@ -54,7 +54,7 @@ and the derived files           pxpic.pdf
   \expandafter\endgroup
 \fi
 %
-\ProvidesFile{pxpic.dtx}[2021-01-13 v1.1a draw pixel pictures]
+\ProvidesFile{pxpic.dtx}[2021-01-16 v1.2 draw pixel pictures]
 \PassOptionsToPackage{full}{textcomp}
 \documentclass{l3doc}
 \RequirePackage[oldstylenums,nott]{kpfonts}
@@ -78,7 +78,9 @@ and the derived files           pxpic.pdf
     ,basicstyle=\fontfamily{jkp}\itshape
     ,morekeywords=^^A
       {^^A
-        \pxpic,\pxpicsetup
+        \pxpic,\pxpicsetup,\pxpicnewmode,\pxpicsetmode,\pxpicnewcolorlist,
+        \pxpicsetcolorlist,\pxpicaddcolorlist,\pxpicforget,\px,\pxskip,\pxpicHT,
+        \pxpicWD,\pxpiclogo
       }
     ,morecomment=[l]\%
     ,commentstyle=\color[gray]{0.4}
@@ -132,20 +134,23 @@ and the derived files           pxpic.pdf
       {expkv}^^A
   }
 \hypersetup{linkcolor=red!80!black,urlcolor=purple!80!black}
+\DoNotIndex{\advance}
 \DoNotIndex{\baselineskip,\begingroup,\bgroup}
 \DoNotIndex{\csname}
 \DoNotIndex{\def,\detokenize,\dimexpr}
-\DoNotIndex{\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv,\ekvparse}
-\DoNotIndex{\ekvsetdef,\endcsname,\endgroup,\expandafter}
+\DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv}
+\DoNotIndex{\ekvparse,\ekvsetdef,\endcsname,\endgroup,\expandafter}
 \DoNotIndex{\hbox,\hskip}
+\DoNotIndex{\iffalse,\fi}
 \DoNotIndex{\kern}
 \DoNotIndex{\leavevmode,\let,\long,\lower}
 \DoNotIndex{\newcommand,\newdimen}
 \DoNotIndex{\PackageError,\protected,\ProvidesPackage}
 \DoNotIndex{\relax,\RequirePackage}
-\DoNotIndex{\@depth,\@height,\@ifdefinable,\@ifnextchar,\@ifundefined,\@width}
+\DoNotIndex{\@declaredcolor,\@firstofone,\@gobble,\@ifdefinable,\@ifnextchar}
+\DoNotIndex{\@ifundefined,\@undeclaredcolor}
 \DoNotIndex{\ekv@ifempty,\ekv@name,\z@}
-\DoNotIndex{\color}
+\DoNotIndex{\unexpanded}
 \DoNotIndex{\vbox,\vrule}
 \@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
 \makeatother
@@ -207,7 +212,7 @@ and the derived files           pxpic.pdf
           \Large draw pixel pictures^^A
         }{pxpic - draw pixel pictures}^^A
     }
-  \date{2021-01-13 v1.1a}
+  \date{2021-01-16 v1.2}
   \author{Jonathan P. Spratte\thanks{\protect\randomize{jspratte@yahoo.de}}}
   \DocInput{pxpic.dtx}
 \end{document}
@@ -570,24 +575,37 @@ and the derived files           pxpic.pdf
 % The available options are
 %
 % \begin{options}
-%   \item[colors] Define pixel colours for |mode=px|, see \autoref{sec:colours}
-%     for a description of the value's syntax. No pixel definitions are made by
-%     the package.
-%   \item[colours] \emph{see \texttt{colors}.}
-%   \item[gap-hack] To fix the issues with visible gaps in \textsc{pdf} viewers
-%     you can introduce some negative kerns to make the pixels overlap (lines
-%     overlap to the top, pixels to the left). This option expects a dimension
-%     as its value. A positive value will (maybe) close the gaps, a negative
-%     value will introduce real gaps. In any case the outermost pixels' borders
-%     still coincide with the borders of the surrounding \CS{hbox}. Take a look
-%     at my babbling about this issue in \autoref{sec:misc}.
-%   \item[ht] Set the height of the pixels.
-%   \item[mode] Set the used mode, see \autoref{sec:modes} for available modes.
-%     Initial value is |px|.
-%   \item[size] Set both |ht| and |wd|. Initial value is \the\pxpicHT.
-%   \item[skip] Define the value to be a skip (an empty space of width |wd|) in
-%     |mode=px|. No skip definitions are made by the package.
-%   \item[wd] Set the width of the pixels.
+%   \item[colors=\meta{colour list}]
+%     Define pixel colours for |mode=px|, see \autoref{sec:colours} for a
+%     description of the value's syntax. No pixel definitions are made by the
+%     package.
+%   \item[colours]
+%     \emph{see \texttt{colors}.}
+%   \item[color-list=\meta{choice}]
+%     loads a previously through \CS{pxpicnewcolorlist} defined colour list. No
+%     colour lists are defined by the package.
+%   \item[colour-list]
+%     \emph{see \texttt{color-list}.}
+%   \item[gap-hack=\meta{dimen}]
+%     To fix the issues with visible gaps in \textsc{pdf} viewers you can
+%     introduce some negative kerns to make the pixels overlap (lines overlap to
+%     the top, pixels to the left). This option expects a dimension as its
+%     value. A positive value will (maybe) close the gaps, a negative value will
+%     introduce real gaps. In any case the outermost pixels' borders still
+%     coincide with the borders of the surrounding \CS{hbox}. Take a look at my
+%     babbling about this issue in \autoref{sec:misc}.
+%   \item[ht=\meta{dimen}]
+%     Set the height of the pixels.
+%   \item[mode=\meta{choice}]
+%     Set the used mode, see \autoref{sec:modes} for available modes. Initial
+%     value is |px|.
+%   \item[size=\meta{dimen}]
+%     Set both |ht| and |wd|. Initial value is \the\pxpicHT.
+%   \item[skip=\meta{dimen}]
+%     Define the value to be a skip (an empty space of width |wd|) in |mode=px|.
+%     No skip definitions are made by the package.
+%   \item[wd=\meta{dimen}]
+%     Set the width of the pixels.
 % \end{options}
 %
 % \subsubsection{Colour syntax}\label{sec:colours}
@@ -649,6 +667,28 @@ and the derived files           pxpic.pdf
 %   already exists, \cs{pxpicsetmode} has no checks on the name.
 % \end{function}
 %
+% \begin{function}{\pxpicnewcolorlist,\pxpicsetcolorlist,\pxpicaddcolorlist}
+%   \begin{syntax}
+%     \cs{pxpicnewcolorlist}\marg{name}\marg{colour list}
+%   \end{syntax}
+%   This defines a colour list (to be used with the |colour-list| option). The
+%   syntax of \meta{colour list} is the same as for the |colours| option. The
+%   pixels aren't directly defined, but only by the use of
+%   |colour-list=|\meta{name}. So
+% \begin{lstlisting}
+% \pxpicnewcolorlist{example}{r=red,b=blue,g=green,k=black,w=white}
+% \pxpicsetup{colour-list=example}
+% \end{lstlisting}
+%   would have the same effect as
+% \begin{lstlisting}
+% \pxpicsetup{colours={r=red,b=blue,g=green,k=black,w=white}}
+% \end{lstlisting}
+%   but a |colour-list| is more efficient if used multiple times. The |new|
+%   variant will only throw an error if the colour list \meta{name} is already
+%   defined. The |set| variant has no such tests, and the |add| variant will add
+%   additional colours to an existing list.
+% \end{function}
+%
 % \begin{function}{\pxpicforget}
 %   \begin{syntax}
 %     \cs{pxpicforget}\marg{px}
@@ -702,7 +742,70 @@ and the derived files           pxpic.pdf
 % to use |gap-hack|, that mitigates the effect but isn't too big (to make the
 % errors less obvious). You can play with the value and decide for yourself
 % what's the lesser evil. Or you do like me, don't use |gap-hack| and blame the
-% viewers.
+% viewers. Here are examples in which you can compare (the |gap-hack| is chosen
+% way too big in this example and skips are used close to white pixels on
+% purpose, but it illustrates the effects; the third output, not shown in the
+% code, uses a more reasonable |gap-hack=.2pt|):\par\nobreak
+% \noindent
+% \begin{minipage}[c]{.5\linewidth}\footnotesize
+% \begin{lstlisting}
+% \pxpicsetup
+%   {
+%      colours={k=black,g=green,w=white}
+%     ,skip=.
+%     ,size=10pt
+%   }
+% \pxpic[gap-hack=2pt]
+%   {
+%     {kkkkk}
+%     {kgggk}
+%     {kwg.k}
+%     {kg.gk}
+%     {kgwk}
+%     {kkkw}
+%   }
+% \raise2pt\pxpic
+%   {
+%     {kkkkk}
+%     {kgggk}
+%     {kwg.k}
+%     {kg.gk}
+%     {kgwk}
+%     {kkkw}
+%   }
+% \end{lstlisting}
+% \end{minipage}
+% \begin{minipage}[c]{.45\linewidth}
+% \pxpicsetup{colours={k=black,g=green,w=white},skip=.,size=10pt}
+% \leavevmode
+% \pxpic[gap-hack=2pt]
+%   {
+%     {kkkkk}
+%     {kgggk}
+%     {kwg.k}
+%     {kg.gk}
+%     {kgwk}
+%     {kkkw}
+%   }
+% \raise2pt\pxpic
+%   {
+%     {kkkkk}
+%     {kgggk}
+%     {kwg.k}
+%     {kg.gk}
+%     {kgwk}
+%     {kkkw}
+%   }
+% \raise1.8pt\pxpic[gap-hack=.2pt]
+%   {
+%     {kkkkk}
+%     {kgggk}
+%     {kwg.k}
+%     {kg.gk}
+%     {kgwk}
+%     {kkkw}
+%   }
+% \end{minipage}
 %
 %
 % \end{documentation}^^A=<<
@@ -718,7 +821,7 @@ and the derived files           pxpic.pdf
 %
 % Report who we are
 %    \begin{macrocode}
-\ProvidesPackage{pxpic}[2021-01-13 v1.1a draw pixel pictures]
+\ProvidesPackage{pxpic}[2021-01-16 v1.2 draw pixel pictures]
 %    \end{macrocode}
 % and load dependencies
 %    \begin{macrocode}
@@ -764,7 +867,7 @@ and the derived files           pxpic.pdf
 %    \end{macrocode}
 % The |colours| option is parsed using \CS{ekvparse} and \CS{pxpic@setcolor}.
 %    \begin{macrocode}
-\protected\ekvdef{pxpic}{colors}{\ekvparse\pxpic@noval\pxpic@setcolor{#1}}
+\protected\ekvdef{pxpic}{colors}{\ekvparse\pxpic@err@noval\pxpic@setcolor{#1}}
 \ekvletkv{pxpic}{colours}{pxpic}{colors}
 %    \end{macrocode}
 % And the |mode| just checks whether the |mode| macro is defined and lets the
@@ -773,12 +876,22 @@ and the derived files           pxpic.pdf
 \protected\ekvdef{pxpic}{mode}
   {%
     \@ifundefined{pxpic@parse@px@#1}%
-      {\pxpic@unknown@mode{#1}}%
+      {\pxpic@err@unknown@mode{#1}}%
       {%
         \expandafter\let\expandafter\pxpic@parse@px
           \csname pxpic@parse@px@#1\endcsname
       }%
   }
+%    \end{macrocode}
+% A similar check is done for the |colour-list| option.
+%    \begin{macrocode}
+\protected\ekvdef{pxpic}{color-list}
+  {%
+    \@ifundefined{pxpic@colorlist@#1}%
+      {\pxpic@err@unknown@colorlist{#1}}
+      {\csname pxpic@colorlist@#1\endcsname}%
+  }
+\ekvletkv{pxpic}{colour-list}{pxpic}{color-list}
 %    \end{macrocode}
 %
 %
@@ -795,7 +908,7 @@ and the derived files           pxpic.pdf
 %   pixel row will be wrapped inside an \CS{hbox}. The \CS{kern} negates a
 %   negative \CS{kern} in \CS{pxpic@parse} so that the first line isn't moved.
 %    \begin{macrocode}
-\newcommand*\pxpic{\hbox\bgroup\pxpic@}
+\@ifdefinable\pxpic{\protected\def\pxpic{\hbox\bgroup\pxpic@}}
 \newcommand\pxpic@[2][]
   {%
     \vbox
@@ -871,11 +984,62 @@ and the derived files           pxpic.pdf
 %   These are pretty simple as well, the |new| variant will use \CS{newcommand}
 %   which will do the testing for us, the |set| variant uses \CS{def}.
 %    \begin{macrocode}
-\protected\def\pxpicnewmode#1#2%
+\protected\long\def\pxpicnewmode#1#2%
   {\expandafter\newcommand\csname pxpic@parse@px@#1\endcsname[1]{#2}}
-\protected\def\pxpicsetmode#1#2%
+\protected\long\def\pxpicsetmode#1#2%
   {\long\expandafter\def\csname pxpic@parse@px@#1\endcsname##1{#2}}
 %    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\pxpicnewcolorlist,\pxpicsetcolorlist,\pxpicaddcolorlist}
+% \begin{macro}[internal]{\pxpicsetcolorlist@,\pxpicaddcolorlist@}
+%   The colour list is first parsed with \CS{ekvparse} inside an \CS{edef}.
+%   \CS{ekvparse} will prevent the parsed list from further expanding, leaving
+%   each list element and \CS{pxpic@experr@noval} or
+%   \CS{pxpic@setcolor@colorlist} before it. In a second \CS{edef} these will be
+%   expanded, \CS{pxpic@experr@noval} throwing an error for each element missing
+%   a colour definition, and \CS{pxpic@setcolor@colorlist} testing for an
+%   opening bracket (which we do expandably) and leaving the correct definition
+%   protected against further expansion. The |add| variant uses a temporary
+%   macro for the parsing part and adds the result to the list holding macro.
+%   The second expansion step in |set| and both in |add| are done inside a group
+%   to revert any definition (also those letting tokens to \CS{relax} by
+%   \CS{csname}) made at this point except for the list macro itself.
+%    \begin{macrocode}
+\protected\def\pxpicnewcolorlist#1%
+  {%
+    \@ifundefined{pxpic@colorlist@#1}
+      {\pxpicsetcolorlist{#1}}
+      {\pxpic@err@defined@colorlist{#1}\@gobble}%
+  }
+\protected\def\pxpicsetcolorlist#1%
+  {\expandafter\pxpicsetcolorlist@\csname pxpic@colorlist@#1\endcsname}
+\protected\long\def\pxpicsetcolorlist@#1#2%
+  {%
+    \edef#1{\ekvparse\pxpic@experr@noval\pxpic@setcolor@colorlist{#2}}%
+    \begingroup\edef#1{\endgroup\protected\def\unexpanded{#1}{#1}}%
+    #1%
+  }
+\protected\def\pxpicaddcolorlist#1%
+  {%
+    \@ifundefined{pxpic@colorlist@#1}
+      {\pxpic@err@unknown@colorlist{#1}\@gobble}
+      {\expandafter\pxpicaddcolorlist@\csname pxpic@colorlist@#1\endcsname}%
+  }
+\protected\long\def\pxpicaddcolorlist@#1#2%
+  {%
+    \begingroup
+      \edef\pxpic@tmp
+        {\ekvparse\pxpic@experr@noval\pxpic@setcolor@colorlist{#2}}%
+      \edef\pxpic@tmp
+        {%
+          \endgroup
+          \protected\def\unexpanded{#1}{\unexpanded\expandafter{#1}\pxpic@tmp}%
+        }%
+    \pxpic@tmp
+  }
+%    \end{macrocode}
+% \end{macro}
 % \end{macro}
 %
 %
@@ -891,6 +1055,15 @@ and the derived files           pxpic.pdf
 \long\def\pxpic@ifend#1\pxpic@end{}
 \let\pxpic@ifempty\ekv@ifempty
 \long\def\pxpic@ifbracket#1\pxpic@end[#2]\pxpic@end{\pxpic@ifempty{#2}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@openbrace}
+%   For some weirder \TeX\ programming it is sometimes necessary to insert an
+%   unmatched opening brace. This code does exactly that if it's expanded twice.
+%   It is put into a single macro so that one can \CS{expandafter} it easier.
+%    \begin{macrocode}
+\newcommand*\pxpic@openbrace{\expandafter{\iffalse}\fi}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -951,7 +1124,7 @@ and the derived files           pxpic.pdf
     \ekvifdefinedNoVal{pxpic@px}{#1}
       {\csname\ekv@name{pxpic@px}{#1}N\endcsname}%
       {%
-        \pxpic@unknown@px{#1}%
+        \pxpic@err@unknown@px{#1}%
         \pxskip
       }%
   }
@@ -967,7 +1140,7 @@ and the derived files           pxpic.pdf
   {%
     \pxpic@ifempty{#1}
       {\pxskip}
-      {{\color{#1}\px}}%
+      {{\@declaredcolor{#1}\px}}%
   }
 %    \end{macrocode}
 % \end{macro}
@@ -998,7 +1171,7 @@ and the derived files           pxpic.pdf
       {%
         \pxpic@ifempty{##1}
           {\pxskip}
-          {{\color[#1]{##1}\px}}%
+          {{\@undeclaredcolor[#1]{##1}\px}}%
       }%
   }
 \pxpic@tmp{rgb}
@@ -1024,7 +1197,7 @@ and the derived files           pxpic.pdf
 %   The actual definition of pixels and skips is stored in macros to which the
 %   frontend macros \CS{px} and \CS{pxskip} will be let inside of \CS{pxpic}.
 %    \begin{macrocode}
-\newcommand\pxpic@px{\vrule\@height\pxpicHT\@width\pxpicWD\@depth\z@}
+\newcommand\pxpic@px{\vrule height\pxpicHT width\pxpicWD depth\z@}
 \newcommand\pxpic@skip{\hskip\pxpicWD}
 %    \end{macrocode}
 % \end{macro}
@@ -1048,24 +1221,92 @@ and the derived files           pxpic.pdf
       {#1}{#2}%
   }
 \newcommand\pxpic@setcolor@a[2]
-  {\ekvdefNoVal{pxpic@px}{#1}{{\color{#2}\px}}}
+  {%
+    \expandafter\def\csname\ekv@name{pxpic@px}{#1}N\endcsname
+      {{\@declaredcolor{#2}\px}}%
+  }
 \newcommand\pxpic@setcolor@b[2]
-  {\ekvdefNoVal{pxpic@px}{#1}{{\color#2\px}}}
+  {%
+    \expandafter\def\csname\ekv@name{pxpic@px}{#1}N\endcsname
+      {{\@undeclaredcolor#2\px}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@setcolor@colorlist}
+%   This macro should leave the correct code in the input stream to define a
+%   single pixel. It is to be used inside of \CS{edef}, hence using
+%   \CS{unexpanded}, which doesn't have an opening brace directly after it
+%   so that the \CS{pxpic@ifbracket} test is fully expanded. Next we expand
+%   \CS{pxpic@setcolor@a}/|b| twice (which will expand the \CS{csname}
+%   contained in it) and then leave the opening bracket for \CS{unexpanded} in
+%   the input stream. The code should be used inside a group so that all the
+%   implicit definitions to \CS{relax} done by \CS{csname} are reverted.
+%    \begin{macrocode}
+\newcommand\pxpic@setcolor@colorlist[2]
+  {%
+    \unexpanded\iffalse{\fi
+    \pxpic@ifbracket\pxpic@end#2.\pxpic@end[]\pxpic@end
+      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@a}
+      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@b}
+      {#1}{#2}%
+    }%
+  }
 %    \end{macrocode}
 % \end{macro}
 %
 %
 % \subsection{Messages}
 %
-% \begin{macro}[internal]{\pxpic@noval,\pxpic@unknown@px,\pxpic@unknown@mode}
+% \begin{macro}[internal]
+%   {
+%     \pxpic@err@noval,\pxpic@err@unknown@px,\pxpic@err@unknown@mode,
+%     \pxpic@err@unknown@colorlist,\pxpic@err@defined@colorlist
+%   }
 %   These are just some macros throwing errors, nothing special here.
 %    \begin{macrocode}
-\newcommand\pxpic@noval[1]
+\newcommand\pxpic@err@noval[1]
   {\PackageError{pxpic}{Missing colour definition for name `\detokenize{#1}'}{}}
-\newcommand\pxpic@unknown@px[1]
+\newcommand\pxpic@err@unknown@px[1]
   {\PackageError{pxpic}{Unknown pixel `\detokenize{#1}'. Skipping}{}}
-\newcommand\pxpic@unknown@mode[1]
+\newcommand\pxpic@err@unknown@mode[1]
   {\PackageError{pxpic}{Unknown mode `#1'}{}}
+\newcommand\pxpic@err@unknown@colorlist[1]
+  {\PackageError{pxpic}{Unknown colour list `#1'}{}}
+\newcommand\pxpic@err@defined@colorlist[1]
+  {\PackageError{pxpic}{Colour list `#1' already defined}{}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@experr}
+%   This macro can be used to throw an error expandably. For this an undefined
+%   control sequence \verb*|\pxpic Error:| is used. The group containing
+%   \CS{expandafter} keeps the definition of \verb*|\pxpic Error:| local (it is
+%   \CS{relax} after the \CS{csname}) so that it is undefined when it's used.
+%   The \CS{@firstofone} is needed to get the readable output (now the undefined
+%   macro and actual message are always the same argument).
+%    \begin{macrocode}
+\def\pxpic@experr#1%
+  {%
+    \long\def\pxpic@experr##1%
+      {%
+        \expandafter\expandafter\expandafter
+        \pxpic@ifend
+          \@firstofone{#1##1}%
+        \pxpic@end
+      }%
+  }
+\begingroup\expandafter\endgroup
+\expandafter\pxpic@experr\csname pxpic Error:\endcsname
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@experr@noval}
+%   With the expandable error throwing mechanism out of the way, the following
+%   is straight forward again.
+%    \begin{macrocode}
+\newcommand\pxpic@experr@noval[1]
+  {\pxpic@experr{Missing colour definition for `#1'}}
 %    \end{macrocode}
 % \end{macro}
 %
