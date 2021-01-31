@@ -59,6 +59,7 @@ and the derived files           pxpic.pdf
 \documentclass{l3doc}
 \RequirePackage[oldstylenums,nott]{kpfonts}
 \usepackage{pxpic}
+\usepackage{hologo}
 \input{glyphtounicode}
 \pdfgentounicode=1
 \RequirePackage{listings}
@@ -279,6 +280,14 @@ and the derived files           pxpic.pdf
 % the same issue which packages like \pkg{colortbl} suffer from as well). In
 % print this shouldn't be an issue, but some rasterisation algorithms employed
 % by viewers and conversion tools have this deficit.
+%
+% Another thing I should mention: The pictures you can draw with \pxpicname\
+% can't be arbitrary large. Due to the design decision of the output as a single
+% \CS{hbox} and the way the output routine works, pictures are limited by \TeX's
+% memory size to roughly $440\times 440$ pixels in \hologo{pdfLaTeX} with the
+% default settings in \TeX\ Live. The size is unlimited in \hologo{LuaLaTeX},
+% due to dynamic memory allocation. In \hologo{XeLaTeX} the size should be even
+% smaller than in \hologo{pdfLaTeX}.
 %
 % \begin{function}{\pxpic}
 %   \begin{syntax}
@@ -736,8 +745,8 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \@ifdefinable\pxpicHT{\newdimen\pxpicHT}
 \@ifdefinable\pxpicWD{\newdimen\pxpicWD}
-\pxpicHT1pt
-\pxpicWD\pxpicHT
+\pxpicHT=1pt
+\pxpicWD=\pxpicHT
 %    \end{macrocode}
 % \end{variable}
 % \begin{variable}[internal]{\pxpic@kern}
@@ -746,7 +755,7 @@ and the derived files           pxpic.pdf
 %   stored in this register.
 %    \begin{macrocode}
 \@ifdefinable\pxpic@kern{\newdimen\pxpic@kern}
-\pxpic@kern\z@
+\pxpic@kern=\z@
 %    \end{macrocode}
 % \end{variable}
 %
@@ -762,10 +771,10 @@ and the derived files           pxpic.pdf
 %
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{size}
-  {\pxpicHT\dimexpr#1\relax\pxpicWD\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{ht}{\pxpicHT\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{wd}{\pxpicWD\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{gap-hack}{\pxpic@kern\dimexpr#1\relax}
+  {\pxpicHT=\dimexpr#1\relax\pxpicWD=\pxpicHT}
+\protected\ekvdef{pxpic}{ht}{\pxpicHT=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{wd}{\pxpicWD=\dimexpr#1\relax}
+\protected\ekvdef{pxpic}{gap-hack}{\pxpic@kern=\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
 %    \end{macrocode}
 % The |colours| option is parsed using \CS{ekvparse} and \CS{pxpic@setcolor}.
@@ -821,7 +830,7 @@ and the derived files           pxpic.pdf
         \let\pxskip\pxpic@skip
         \advance\pxpicHT\pxpic@kern
         \advance\pxpicWD\pxpic@kern
-        \baselineskip\pxpicHT
+        \baselineskip=\pxpicHT
         \kern\pxpic@kern
         \pxpic@parse#2\pxpic@end
       }%
@@ -848,9 +857,9 @@ and the derived files           pxpic.pdf
 \newcommand*\pxpiclogo[1][.13ex]
   {%
     \begingroup
-      \pxpicHT\dimexpr#1\relax
-      \pxpicWD\pxpicHT
-      \pxpic@kern\z@
+      \pxpicHT=\dimexpr#1\relax
+      \pxpicWD=\pxpicHT
+      \pxpic@kern=\z@
       \leavevmode
       \lower3.2\pxpicHT\pxpic
         [mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.]
