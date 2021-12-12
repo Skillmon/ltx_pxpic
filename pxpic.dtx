@@ -299,8 +299,9 @@ and the derived files           pxpic.pdf
 %   contained in an \CS{hbox} and can be used wherever \TeX\ expects an
 %   \CS{hbox}. As a result, when you're in vertical mode a \cs{pxpic} will form
 %   a text line, to prevent this you can use \CS{leavevmode} before it. The
-%   \cs{pxpic} will be bottom aligned, you can change this using \CS{raisebox}
-%   (or, if you want, \TeX's \CS{raise} and \CS{lower} primitives).
+%   \cs{pxpic} will be bottom aligned by default (see the options |b|, |c|, and
+%   |t|), you can further tweak this using \CS{raisebox} (or, if you want,
+%   \TeX's \CS{raise} and \CS{lower} primitives).
 % \end{function}
 %
 % \subsubsection{Examples}
@@ -513,11 +514,20 @@ and the derived files           pxpic.pdf
 %     value is |px|.
 %   \item[size=\meta{dimen}]
 %     Set both |ht| and |wd|. Initial value is \the\pxpicHT.
-%   \item[skip=\meta{value}]
-%     Define the \meta{value} to be a skip (an empty space of width |wd|) in
+%   \item[skip=\meta{tokens}]
+%     Define \meta{tokens} to be a skip (an empty space of width |wd|) in
 %     |mode=px|. No skip definitions are made by the package.
 %   \item[wd=\meta{dimen}]
 %     Set the width of the pixels.
+%   \item[b]
+%     Set the bottom of the \CS{pxpic} on the surrounding baseline (vertical
+%     bottom alignment; this is the default).
+%   \item[c]
+%     Set the centre of the \CS{pxpic} on the surrounding baseline (vertical
+%     centre alignment).
+%   \item[t]
+%     Set the top of the \CS{pxpic} on the surrounding baseline (vertical top
+%     alignment).
 % \end{options}
 %
 % \subsubsection{Colour syntax}\label{sec:colours}
@@ -666,6 +676,7 @@ and the derived files           pxpic.pdf
 %      colours={k=black,g=green,w=white}
 %     ,skip=.
 %     ,size=10pt
+%     ,t
 %   }
 % \pxpic[gap-hack=2pt]
 %   {
@@ -676,7 +687,7 @@ and the derived files           pxpic.pdf
 %     {kgwk}
 %     {kkkw}
 %   }
-% \raise2pt\pxpic
+% \pxpic
 %   {
 %     {kkkkk}
 %     {kgggk}
@@ -688,7 +699,7 @@ and the derived files           pxpic.pdf
 % \end{lstlisting}
 % \end{minipage}
 % \begin{minipage}[c]{.45\linewidth}
-% \pxpicsetup{colours={k=black,g=green,w=white},skip=.,size=10pt}
+% \pxpicsetup{colours={k=black,g=green,w=white},skip=.,size=10pt,t}
 % \leavevmode
 % \pxpic[gap-hack=2pt]
 %   {
@@ -699,7 +710,7 @@ and the derived files           pxpic.pdf
 %     {kgwk}
 %     {kkkw}
 %   }
-% \raise2pt\pxpic
+% \pxpic
 %   {
 %     {kkkkk}
 %     {kgggk}
@@ -708,7 +719,7 @@ and the derived files           pxpic.pdf
 %     {kgwk}
 %     {kkkw}
 %   }
-% \raise1.8pt\pxpic[gap-hack=.2pt]
+% \pxpic[gap-hack=.2pt]
 %   {
 %     {kkkkk}
 %     {kgggk}
@@ -758,6 +769,19 @@ and the derived files           pxpic.pdf
 \pxpic@kern=\z@
 %    \end{macrocode}
 % \end{variable}
+% \begin{macro}[internal]{\pxpic@inner@box,\pxpic@after@inner@box}
+%   To get different vertical alignments we nest one of |\vbox|, |\vtop|, and a
+%   lowered |\vbox| inside the outer |\hbox|. The macro \cs{pxpic@inner@box}
+%   will store this information, and since lowering can only be done after the
+%   box was set (the alternative would be |\vcenter|, which ends up on a
+%   different height), we need to be able to put the box output with |\lower|
+%   after the box was collected, which is why we need
+%   \cs{pxpic@after@inner@box}. We default to bottom alignment.
+%    \begin{macrocode}
+\@ifdefinable\pxpic@inner@box{\let\pxpic@inner@box\vbox}
+\@ifdefinable\pxpic@after@inner@box{\let\pxpic@after@inner@box\@empty}
+%    \end{macrocode}
+% \end{macro}
 %
 %
 % \subsection{Options}
@@ -805,6 +829,25 @@ and the derived files           pxpic.pdf
   }
 \ekvletkv{pxpic}{colour-list}{pxpic}{color-list}
 %    \end{macrocode}
+% The alignment options set the internals |\pxpic@inner@box| and
+% |\pxpic@after@inner@box|.
+%    \begin{macrocode}
+\protected\ekvdefNoVal{pxpic}{b}
+  {%
+    \let\pxpic@inner@box\vbox
+    \let\pxpic@after@inner@box\@empty
+  }
+\protected\ekvdefNoVal{pxpic}{c}
+  {%
+    \def\pxpic@inner@box{\setbox0=\vbox}%
+    \def\pxpic@after@inner@box{\lower.5\ht0\box0}%
+  }
+\protected\ekvdefNoVal{pxpic}{t}
+  {%
+    \let\pxpic@inner@box\vtop
+    \let\pxpic@after@inner@box\@empty
+  }
+%    \end{macrocode}
 %
 %
 % \subsection{User macros}\label{sec:implementation:pxpiclogo}
@@ -823,9 +866,9 @@ and the derived files           pxpic.pdf
 \@ifdefinable\pxpic{\protected\def\pxpic{\hbox\bgroup\pxpic@}}
 \newcommand\pxpic@[2][]
   {%
-    \vbox
+    \pxpicsetup{#1}%
+    \pxpic@inner@box
       {%
-        \pxpicsetup{#1}%
         \let\px\pxpic@px
         \let\pxskip\pxpic@skip
         \advance\pxpicHT\pxpic@kern
@@ -834,6 +877,7 @@ and the derived files           pxpic.pdf
         \kern\pxpic@kern
         \pxpic@parse#2\pxpic@end
       }%
+    \pxpic@after@inner@box
     \egroup
   }
 %    \end{macrocode}
@@ -852,7 +896,7 @@ and the derived files           pxpic.pdf
 %   bit so that it appears correctly aligned on the baseline. Since the logo
 %   should be part of a normal sentence in most usages we put \CS{leavevmode}
 %   before it. Also we make sure that the |mode| and |px| definitions are
-%   correct.
+%   correct and the output is bottom aligned.
 %    \begin{macrocode}
 \newcommand*\pxpiclogo[1][.13ex]
   {%
@@ -862,7 +906,7 @@ and the derived files           pxpic.pdf
       \pxpic@kern=\z@
       \leavevmode
       \lower3.2\pxpicHT\pxpic
-        [mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.]
+        [b,mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.]
         {
           {............................................g}
           {...........................................gggg}
