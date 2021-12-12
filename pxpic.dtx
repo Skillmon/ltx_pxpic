@@ -136,23 +136,24 @@ and the derived files           pxpic.pdf
   }
 \hypersetup{linkcolor=red!80!black,urlcolor=purple!80!black}
 \DoNotIndex{\advance}
-\DoNotIndex{\baselineskip,\begingroup,\bgroup}
+\DoNotIndex{\baselineskip,\begingroup,\bgroup,\box}
 \DoNotIndex{\csname}
 \DoNotIndex{\def,\detokenize,\dimexpr}
 \DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv}
 \DoNotIndex{\ekvparse,\ekvsetdef,\endcsname,\endgroup,\expandafter}
-\DoNotIndex{\hbox,\hskip}
+\DoNotIndex{\hbox,\hskip,\ht}
 \DoNotIndex{\iffalse,\fi}
 \DoNotIndex{\kern}
 \DoNotIndex{\leavevmode,\let,\long,\lower}
 \DoNotIndex{\newcommand,\newdimen}
 \DoNotIndex{\PackageError,\protected,\ProvidesPackage}
 \DoNotIndex{\relax,\RequirePackage}
-\DoNotIndex{\@declaredcolor,\@firstofone,\@gobble,\@ifdefinable,\@ifnextchar}
-\DoNotIndex{\@ifundefined,\@undeclaredcolor}
+\DoNotIndex{\setbox}
+\DoNotIndex{\@declaredcolor,\@empty,\@firstofone,\@gobble,\@ifdefinable}
+\DoNotIndex{\@ifnextchar,\@ifundefined,\@undeclaredcolor}
 \DoNotIndex{\ekv@ifempty,\ekv@name,\p@,\z@}
 \DoNotIndex{\unexpanded}
-\DoNotIndex{\vbox,\vrule}
+\DoNotIndex{\vbox,\vrule,\vtop}
 \@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
 \makeatother
 \newenvironment{options}[1][]
@@ -949,7 +950,7 @@ and the derived files           pxpic.pdf
 % \end{macro}
 %
 % \begin{macro}{\pxpicnewcolorlist,\pxpicsetcolorlist,\pxpicaddcolorlist}
-% \begin{macro}[internal]{\pxpicsetcolorlist@,\pxpicaddcolorlist@}
+% \begin{macro}[internal]{\pxpic@setcolorlist,\pxpic@addcolorlist}
 %   The colour list is first parsed with \CS{ekvparse} inside an \CS{edef}.
 %   \CS{ekvparse} will prevent the parsed list from further expanding, leaving
 %   each list element and \CS{pxpic@experr@noval} or
@@ -970,8 +971,8 @@ and the derived files           pxpic.pdf
       {\pxpic@err@defined@colorlist{#1}\@gobble}%
   }
 \protected\def\pxpicsetcolorlist#1%
-  {\expandafter\pxpicsetcolorlist@\csname pxpic@colorlist@#1\endcsname}
-\protected\long\def\pxpicsetcolorlist@#1#2%
+  {\expandafter\pxpic@setcolorlist\csname pxpic@colorlist@#1\endcsname}
+\protected\long\def\pxpic@setcolorlist#1#2%
   {%
     \edef#1{\ekvparse\pxpic@experr@noval\pxpic@setcolor@colorlist{#2}}%
     \begingroup\edef#1{\endgroup\protected\def\unexpanded{#1}{#1}}%
@@ -981,9 +982,9 @@ and the derived files           pxpic.pdf
   {%
     \@ifundefined{pxpic@colorlist@#1}
       {\pxpic@err@unknown@colorlist{#1}\@gobble}
-      {\expandafter\pxpicaddcolorlist@\csname pxpic@colorlist@#1\endcsname}%
+      {\expandafter\pxpic@addcolorlist\csname pxpic@colorlist@#1\endcsname}%
   }
-\protected\long\def\pxpicaddcolorlist@#1#2%
+\protected\long\def\pxpic@addcolorlist#1#2%
   {%
     \begingroup
       \edef\pxpic@tmp
