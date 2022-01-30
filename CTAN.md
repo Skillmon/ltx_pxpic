@@ -1,4 +1,3 @@
-
 -------------------------------------------------------------------------------
 # pxpic -- draw pixel pictures
 
@@ -11,7 +10,7 @@ Hosted at https://github.com/Skillmon/ltx_pxpic
 
 -------------------------------------------------------------------------------
 
-Copyright (C) 2021 Jonathan P. Spratte
+Copyright (C) 2021-2022 Jonathan P. Spratte
 
 This  work may be  distributed and/or  modified under  the conditions  of the
 LaTeX Project Public License (LPPL),  either version 1.3c  of this license or

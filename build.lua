@@ -10,6 +10,11 @@ function update_tag(file, content, tagname, tagdate)
     tagname = pkgversion
     tagdate = pkgdate
   end
+  -- update copyright notices
+  _, _, tagyear = string.find(tagdate, "(%d%d%d%d)")
+  content = string.gsub(content,
+    "(Copyright%s*%(C%)%s*%d%d%d%d%-)%d%d%d%d",
+    "%1" .. tagyear)
   return string.gsub(content,
     "%d%d%d%d%-%d%d%-%d%d v%d%.%d%w?",
     tagdate .. " v" .. tagname)
