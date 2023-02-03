@@ -140,7 +140,7 @@ and the derived files           pxpic.pdf
 \DoNotIndex{\csname}
 \DoNotIndex{\def,\detokenize,\dimexpr}
 \DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv}
-\DoNotIndex{\ekvparse,\ekvsetdef,\endcsname,\endgroup,\expandafter}
+\DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\endcsname,\endgroup,\expandafter}
 \DoNotIndex{\hbox,\hskip,\ht}
 \DoNotIndex{\iffalse,\fi}
 \DoNotIndex{\kern}
@@ -899,15 +899,14 @@ and the derived files           pxpic.pdf
 %   before it. Also we make sure that the |mode| and |px| definitions are
 %   correct and the output is bottom aligned.
 %    \begin{macrocode}
+\ekvcompile\pxpiclogo@settings#1{pxpic}
+  {size=#1,gap-hack=\z@,b,mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.}
 \newcommand*\pxpiclogo[1][.13ex]
   {%
     \begingroup
-      \pxpicHT=\dimexpr#1\relax
-      \pxpicWD=\pxpicHT
-      \pxpic@kern=\z@
       \leavevmode
+      \pxpiclogo@settings{#1}%
       \lower3.2\pxpicHT\pxpic
-        [b,mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.]
         {
           {............................................g}
           {...........................................gggg}
