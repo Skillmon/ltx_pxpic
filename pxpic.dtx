@@ -140,7 +140,8 @@ and the derived files           pxpic.pdf
 \DoNotIndex{\csname}
 \DoNotIndex{\def,\detokenize,\dimexpr}
 \DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv}
-\DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\endcsname,\endgroup,\expandafter}
+\DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\ekvmorekv}
+\DoNotIndex{\endcsname,\endgroup,\expandafter}
 \DoNotIndex{\hbox,\hskip,\ht}
 \DoNotIndex{\iffalse,\fi}
 \DoNotIndex{\kern}
@@ -174,6 +175,9 @@ and the derived files           pxpic.pdf
           [
             style=nextline
             ,font=\normalfont\ttfamily
+            ,labelwidth=\dimexpr.25\marginparwidth-5pt\relax
+            ,labelsep*=5pt
+            ,leftmargin=!
             ,#1
           ]%
       }
@@ -500,6 +504,20 @@ and the derived files           pxpic.pdf
 %     colour lists are defined by the package.
 %   \item[colour-list]
 %     \emph{see \texttt{color-list}.}
+%   \item[exp]
+%     \emph{see \texttt{expansion}}
+%   \item[expansion=\meta{choice}]
+%     This is a choice to control the expansion of the \meta{pixel list}. The
+%     choices are:
+%     \begin{options}
+%       \item[full]
+%         the \meta{pixel list} is subject to one full expansion via
+%         |\expanded|.
+%       \item[none]
+%         no expansion takes place, the \meta{pixel list} is used as it is.
+%     \end{options}
+%     The initial value is |none|, the default used if you don't provide a value
+%     is |full|.
 %   \item[gap-hack=\meta{dimen}]
 %     To fix the issues with visible gaps in \textsc{pdf} viewers you can
 %     introduce some negative kerns to make the pixels overlap (lines overlap to
@@ -825,7 +843,7 @@ and the derived files           pxpic.pdf
 \protected\ekvdef{pxpic}{color-list}
   {%
     \@ifundefined{pxpic@colorlist@#1}%
-      {\pxpic@err@unknown@colorlist{#1}}
+      {\pxpic@err@unknown@colorlist{#1}}%
       {\csname pxpic@colorlist@#1\endcsname}%
   }
 \ekvletkv{pxpic}{colour-list}{pxpic}{color-list}
@@ -848,6 +866,28 @@ and the derived files           pxpic.pdf
     \let\pxpic@inner@box\vtop
     \let\pxpic@after@inner@box\@empty
   }
+%    \end{macrocode}
+%
+% The expansion related option will set an internal. It's yet another option
+% which will need to check for a defined internal, as it's a choice of |none| or
+% |full|. This is deliberately not defined |\protected| to allow expansion as
+% far as possible.
+%    \begin{macrocode}
+\ekvdef{pxpic}{expansion}
+  {%
+    \@ifundefined{pxpic@expansion@#1}%
+      {\pxpic@err@unknown@expansion{#1}}%
+      {\csname pxpic@expansion@#1\endcsname}%
+  }
+\ekvdefNoVal{pxpic}{expansion}{\pxpic@expansion@full}
+\ekvletkv     {pxpic}{exp}{pxpic}{expansion}
+\ekvletkvNoVal{pxpic}{exp}{pxpic}{expansion}
+%    \end{macrocode}
+% And we define the choices and the initial behaviour:
+%    \begin{macrocode}
+\protected\def\pxpic@expansion@none{\let\pxpic@expansion\@firstofone}
+\protected\def\pxpic@expansion@full{\let\pxpic@expansion\expanded}
+\pxpic@expansion@none
 %    \end{macrocode}
 %
 %
@@ -876,7 +916,7 @@ and the derived files           pxpic.pdf
         \advance\pxpicWD\pxpic@kern
         \baselineskip=\pxpicHT
         \kern\pxpic@kern
-        \pxpic@parse#2\pxpic@end
+        \expandafter\pxpic@parse\pxpic@expansion{#2}\pxpic@end
       }%
     \pxpic@after@inner@box
     \egroup
@@ -1218,7 +1258,8 @@ and the derived files           pxpic.pdf
 % \begin{macro}[internal]
 %   {
 %     \pxpic@err@noval,\pxpic@err@unknown@px,\pxpic@err@unknown@mode,
-%     \pxpic@err@unknown@colorlist,\pxpic@err@defined@colorlist
+%     \pxpic@err@unknown@colorlist,\pxpic@err@defined@colorlist,
+%     \pxpic@err@unknown@expansion
 %   }
 %   These are just some macros throwing errors, nothing special here.
 %    \begin{macrocode}
@@ -1232,6 +1273,8 @@ and the derived files           pxpic.pdf
   {\PackageError{pxpic}{Unknown colour list `#1'}{}}
 \newcommand\pxpic@err@defined@colorlist[1]
   {\PackageError{pxpic}{Colour list `#1' already defined}{}}
+\newcommand\pxpic@err@unknown@expansion[1]
+  {\PackageError{pxpic}{Unknown expansion mode `#1'}{}}
 %    \end{macrocode}
 % \end{macro}
 %
