@@ -269,15 +269,36 @@ and the derived files           pxpic.pdf
 %
 % \pxpicname\ supports different input modes, all of them have the same basic
 % parsing behaviour. A \meta{pixel list} contains the pixel colours. The image
-% is built line wise from top left to bottom right. Each row of pixels should be
-% a single \TeX\ argument (so either just one token, or a group delimited by
-% |{}|), and within each line each pixel in turn should be a single \TeX\
-% argument (so either just one token, or a group delimited by |{}|). Spaces and
-% hence single newlines in the sources between \meta{pixel list} elements are
-% ignored. The different modes are explained in \autoref{sec:modes}. The only
-% disallowed token in the \meta{pixel list} is the control sequence
-% \CS{pxpic@end} (plus the usual restrictions of \TeX\ so no unbalanced braces,
-% no macros defined as \CS{outer}).
+% is built line wise from top left to bottom right.
+% There are two different syntaxes how a single row is given (dependent on the
+% setting of the |lines|-key, see \autoref{sec:options}):
+% \begin{itemize}
+%   \item
+%     By default each row of pixels should be a single \TeX\ argument (so either
+%     just one token, or a group delimited by |{}|). (This is the behaviour for
+%     |lines=group|)
+%   \item
+%     Alternatively each row of pixels should be right delimited by a space (and
+%     since a newline is turned into a space in \TeX\ with default settings, a
+%     newline is also possible). (This is the behaviour for |lines=space| and
+%     |lines=csv|)
+% \end{itemize}
+% Inside each line there are also two different parsing modes:
+% \begin{itemize}
+%   \item
+%     By default within each line each pixel in turn should be a single \TeX\
+%     argument (so either just one token, or a group delimited by |{}|). (This
+%     is the behaviour for |lines=group| and |lines=space|)
+%   \item
+%     Each pixel except the last one is separated from the next pixel by a
+%     comma, no space trimming is applied. (This is the behaviour of
+%     |lines=csv|)
+% \end{itemize}
+%
+% The different modes that interpret a single pixel's input are explained in
+% \autoref{sec:modes}. The only disallowed token in the \meta{pixel list} is the
+% control sequence \CS{pxpic@end} (plus the usual restrictions of \TeX\ so no
+% unbalanced braces, no macros defined as \CS{outer}).
 %
 % There is a small caveat however: \pxpicname\ draws each pixel individually,
 % and there is really no space between them, however some \textsc{pdf} viewers
@@ -366,17 +387,48 @@ and the derived files           pxpic.pdf
 % A heart (shamelessly copied example from \pixelart):\par\nobreak
 % \noindent
 % \codeexample$
-% \pxpic
+% \pxpic[lines=space]
 %   {
-%     {..rr.rr}
-%     {.rrrrrrr}
-%     {rrrrrrrrr}
-%     {rrrrrrrrr}
-%     {rrrrrrrrr}
-%     {.rrrrrrr}
-%     {..rrrrr}
-%     {...rrr}
-%     {....r}
+%     ..rr.rr
+%     .rrrrrrr
+%     rrrrrrrrr
+%     rrrrrrrrr
+%     rrrrrrrrr
+%     .rrrrrrr
+%     ..rrrrr
+%     ...rrr
+%     ....r
+%   }
+% $
+%
+% A parrot (shamelessly copied example from \pkg{PixelArtTikz}:\par\nobreak
+% \noindent
+% \codeexample$
+% \pxpic[lines=csv,colours={2=brown,3=yellow}]
+%   {
+%     .,.,.,.,.,.,k,k,k,k,.,.,.,.,.,.
+%     .,.,.,.,k,k,r,r,r,r,k,k,.,.,.,.
+%     .,.,.,k,r,r,r,r,r,r,r,r,k,.,.,.
+%     .,.,k,r,r,r,r,r,r,r,r,r,r,k,.,.
+%     .,.,k,r,r,r,r,r,r,r,r,r,r,k,.,.
+%     .,k,r,.,.,r,r,r,r,r,r,.,.,r,k,.
+%     .,k,.,.,.,.,k,k,k,k,.,.,.,.,k,.
+%     .,k,.,k,.,.,k,k,k,k,.,k,.,.,k,.
+%     .,k,r,.,.,.,k,k,k,k,.,.,.,r,k,.
+%     .,.,k,r,r,.,k,k,k,k,.,r,r,k,.,.
+%     .,.,k,r,r,r,k,k,k,k,r,r,r,k,.,.
+%     .,.,.,k,r,r,r,k,k,r,r,r,k,.,.,.
+%     .,.,k,3,r,r,r,r,r,r,r,r,3,k,.,.
+%     .,k,b,3,r,r,r,r,r,r,r,r,3,b,k,.
+%     .,k,b,b,r,r,r,r,r,r,r,r,b,b,k,.
+%     .,k,b,b,r,r,r,r,r,r,r,r,b,b,k,.
+%     .,k,b,k,r,r,r,k,k,r,r,r,k,b,k,.
+%     2,2,k,2,k,k,k,2,2,k,k,k,2,k,2,2
+%     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+%     2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2
+%     .,.,.,.,.,k,r,r,r,r,k,.,.,.,.,.
+%     .,.,.,.,.,.,k,r,r,k,.,.,.,.,.,.
+%     .,.,.,.,.,.,.,k,k,.,.,.,.,.,.,.
 %   }
 % $
 %
@@ -528,6 +580,21 @@ and the derived files           pxpic.pdf
 %     babbling about this issue in \autoref{sec:misc}.
 %   \item[ht=\meta{dimen}]
 %     Set the height of the pixels.
+%   \item[lines=\meta{choice}]
+%     How the individual lines of a \meta{pixel list} are given. The choices
+%     are:
+%     \begin{options}
+%       \item[group]
+%         The default syntax in which each line is a single \TeX\ argument
+%         (group delimited by |{}|).
+%       \item[space]
+%         A different input syntax in which each line should be right-delimited
+%         by a space (or newline as, by default, a newline is the same as a
+%         space in \TeX).
+%       \item[csv]
+%         The same line-wise input as |space|, but in each line each pixel
+%         should be separated from the next with a comma.
+%     \end{options}
 %   \item[mode=\meta{choice}]
 %     Set the used mode, see \autoref{sec:modes} for available modes. Initial
 %     value is |px|.
@@ -664,12 +731,17 @@ and the derived files           pxpic.pdf
 % either open a ticket on Github (\url{https://github.com/Skillmon/ltx_pxpic})
 % or email me (see the first page).
 %
-% A similar package is \pixelart, which, as of writing this, is described as a
-% ``working draft'' by its author. \pxpicname\ wasn't intended as a direct
-% competitor (I already started coding \pxpicname\ when I learned about
-% \pixelart's existence), but I took inspiration from the ``Bugs, Ideas,
-% Undefined behaviours'' section of \pixelart's documentation for the syntax of
-% |mode=px|.
+% A similar package is \pixelart, which, at the time \pxpicname\ was created,
+% was described as a ``working draft'' by its author. \pxpicname\ wasn't
+% intended as a direct competitor (I already started coding \pxpicname\ when I
+% learned about \pixelart's existence), but I took inspiration from the ``Bugs,
+% Ideas, Undefined behaviours'' section of \pixelart's documentation for the
+% syntax of |mode=px|. Also the |lines=space| option is a copy of the syntax the
+% new stable version of \pixelart\ is using (so images created with it could be
+% processed with \pkg{pxpic} and vice versa). A third package that allows
+% drawing pixel art is \pkg{PixelArtTikz}, that uses a csv-syntax for its pixel
+% definition lists (you may have luck and the mode |lines=csv| works for lists
+% defined for \pkg{PixelArtTikz}).
 %
 % \paragraph{Regarding the gap issue:}
 % The pixels are output touching each other with no real gap, however some
@@ -890,6 +962,18 @@ and the derived files           pxpic.pdf
 \pxpic@expansion@none
 %    \end{macrocode}
 %
+% Another key is the choice how lines are delimited, either as a single
+% group/argument or by spaces (or newlines). The code defining the choices'
+% behaviour is a bit down the road, here we only initialise the keys.
+%    \begin{macrocode}
+\ekvdef{pxpic}{lines}
+  {%
+    \@ifundefined{pxpic@@parse@#1}%
+      {\pxpic@err@unknown@lines{#1}}%
+      {\csname pxpic@@parse@#1\endcsname}%
+  }
+%    \end{macrocode}
+%
 %
 % \subsection{User macros}\label{sec:implementation:pxpiclogo}
 %
@@ -916,7 +1000,7 @@ and the derived files           pxpic.pdf
         \advance\pxpicWD\pxpic@kern
         \baselineskip=\pxpicHT
         \kern\pxpic@kern
-        \expandafter\pxpic@parse\pxpic@expansion{#2}\pxpic@end
+        \expandafter\pxpic@parse\pxpic@expansion{{#2}}%
       }%
     \pxpic@after@inner@box
     \egroup
@@ -1064,7 +1148,10 @@ and the derived files           pxpic.pdf
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}[internal]{\pxpic@parse,\pxpic@done}
+% \begin{macro}[internal]
+%   {\pxpic@parse,\pxpic@@parse,\pxpic@parse@aux,\pxpic@done,\pxpic@parseline}
+% \begin{macro}[internal]
+%   {\pxpic@@parse@group,\pxpic@@parse@space,\pxpic@@parse@csv}
 %   The parsing loop is pretty simple, first check whether we're done, else open
 %   a new \CS{hbox} (which will form a row in the \CS{vbox} placed by
 %   \CS{pxpic@}) in which the inner parsing loop is run. Then call the next
@@ -1072,33 +1159,79 @@ and the derived files           pxpic.pdf
 %   First we introduce our \CS{kern} which might fix the gap issue. Another
 %   \CS{kern} is done at the start of each \CS{hbox} to compensate the
 %   unnecessary \CS{kern} done by the first \CS{pxpic@parseline}.
+%
+%   This parsing has one step of indirection, the first macro that is called is
+%   \CS{pxpic@parse}, that'll set things up with the end marker for the row
+%   parser \CS{pxpic@@parse}. Both the definition of \CS{pxpic@parse} and
+%   \CS{pxpic@@parse} is dependent on the setting of the |lines| key, hence they
+%   are set up with the two macros \CS{pxpic@@parse@group} and
+%   \CS{pxpic@@parse@space} that represent the choices of said key.
 %    \begin{macrocode}
-\newcommand\pxpic@parse[1]
+\protected\def\pxpic@parse@setarg#1#2%
   {%
-    \pxpic@ifend#1\pxpic@done\pxpic@end
-    \kern-\pxpic@kern
-    \hbox{\kern\pxpic@kern\pxpic@parseline#1\pxpic@end}%
-    \pxpic@parse
+    \long\def\pxpic@@parse##1#1%
+      {%
+        \pxpic@ifend##1\pxpic@done\pxpic@end
+        \kern-\pxpic@kern
+        \hbox{\kern\pxpic@kern\pxpic@parseline##1#2\pxpic@end#2}%
+        \pxpic@@parse
+      }%
+    \long\def\pxpic@parseline##1#2%
+      {%
+        \pxpic@ifend##1\pxpic@linedone\pxpic@end
+        \kern-\pxpic@kern
+        \pxpic@parse@px{##1}%
+        \pxpic@parseline
+      }
   }
-\long\def\pxpic@done\pxpic@end\kern-\pxpic@kern\hbox#1\pxpic@parse{}
+\protected\def\pxpic@@parse@group
+  {%
+    \long\def\pxpic@parse##1{\pxpic@@parse##1\pxpic@end}%
+    \pxpic@parse@setarg{}{}%
+  }
+%    \end{macrocode}
+%   In the |space| and |csv| case we need to make sure that there are no extra
+%   spaces that would result in empty lines. We borrow the space trimmer from
+%   \pkg{expl3} for this.
+%    \begin{macrocode}
+\ExplSyntaxOn
+\cs_new_protected:Npn \pxpic@@parse@space #1
+  {
+    \protected\def\pxpic@@parse@space
+      {
+        \protected\long\def\pxpic@parse ####1
+          { \tl_trim_spaces_apply:nN {####1} \pxpic@parse@aux #1 \pxpic@end #1 }
+        \pxpic@parse@setarg {#1} {}
+      }
+    \protected\def\pxpic@@parse@csv
+      {
+        \protected\long\def\pxpic@parse ####1
+          { \tl_trim_spaces_apply:nN {####1} \pxpic@parse@aux #1 \pxpic@end #1 }
+        \pxpic@parse@setarg {#1} { , }
+      }
+  }
+\ExplSyntaxOff
+\long\def\pxpic@parse@aux#1{\pxpic@@parse#1}
+\pxpic@@parse@space{ }
+%    \end{macrocode}
+%   Here we set up the default definition. Also the end of the parsing is
+%   defined here.
+%    \begin{macrocode}
+\pxpic@@parse@group
+\long\def\pxpic@done\pxpic@end\kern-\pxpic@kern\hbox#1\pxpic@@parse{}
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
 %
-% \begin{macro}[internal]{\pxpic@parseline,\pxpic@linedone}
-%   The line parsing loop also checks whether we're done, if not we place a
+% \begin{macro}[internal]{\pxpic@linedone}
+%   For \CS{pxpic@parseline}
+%   the line parsing loop also checks whether we're done, if not we place a
 %   pixel using the current definition of \CS{pxpic@parse@px} (which will be set
 %   by the current |mode|) and afterwards call the next iteration. If we're done
 %   we gobble the remainder of the current iteration and control goes back to
 %   \CS{pxpic@parse}. Before each pixel we introduce a negative \CS{kern} to
 %   maybe fix the gap issue by letting the pixels overlap a bit.
 %    \begin{macrocode}
-\newcommand\pxpic@parseline[1]
-  {%
-    \pxpic@ifend#1\pxpic@linedone\pxpic@end
-    \kern-\pxpic@kern
-    \pxpic@parse@px{#1}%
-    \pxpic@parseline
-  }
 \long\def\pxpic@linedone
     \pxpic@end\kern-\pxpic@kern\pxpic@parse@px#1\pxpic@parseline
   {}
@@ -1275,6 +1408,8 @@ and the derived files           pxpic.pdf
   {\PackageError{pxpic}{Colour list `#1' already defined}{}}
 \newcommand\pxpic@err@unknown@expansion[1]
   {\PackageError{pxpic}{Unknown expansion mode `#1'}{}}
+\newcommand\pxpic@err@unknown@lines[1]
+  {\PackageError{pxpic}{Unknown lines mode `#1'}{}}
 %    \end{macrocode}
 % \end{macro}
 %
