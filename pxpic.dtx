@@ -328,6 +328,9 @@ and the derived files           pxpic.pdf
 %   \cs{pxpic} will be bottom aligned by default (see the options |b|, |c|, and
 %   |t|), you can further tweak this using \CS{raisebox} (or, if you want,
 %   \TeX's \CS{raise} and \CS{lower} primitives).
+%
+%   If you used the |file| option the mandatory argument might be a file name
+%   containing a \meta{pixel list} instead of the \meta{pixel list} itself.
 % \end{function}
 %
 % \subsubsection{Examples}
@@ -401,11 +404,11 @@ and the derived files           pxpic.pdf
 %   }
 % $
 %
-% A parrot (shamelessly copied example from \pkg{PixelArtTikz}:\par\nobreak
-% \noindent
-% \codeexample$
-% \pxpic[lines=csv,colours={2=brown,3=yellow}]
-%   {
+% A parrot (shamelessly copied example from \pkg{PixelArtTikz}):\par\nobreak
+% \begingroup
+% \footnotesize
+% \begin{lstlisting}[belowskip=0pt]
+% \begin{filecontents*}{\jobname-parrot.csv}
 %     .,.,.,.,.,.,k,k,k,k,.,.,.,.,.,.
 %     .,.,.,.,k,k,r,r,r,r,k,k,.,.,.,.
 %     .,.,.,k,r,r,r,r,r,r,r,r,k,.,.,.
@@ -429,7 +432,19 @@ and the derived files           pxpic.pdf
 %     .,.,.,.,.,k,r,r,r,r,k,.,.,.,.,.
 %     .,.,.,.,.,.,k,r,r,k,.,.,.,.,.,.
 %     .,.,.,.,.,.,.,k,k,.,.,.,.,.,.,.
-%   }
+% \end{filecontents*}
+% \end{lstlisting}
+% \endgroup
+% \noindent
+% \codeexample$
+% \pxpic
+%   [
+%     lines=csv,
+%     colours={2=brown,3=yellow},
+%     file,
+%     size=3pt
+%   ]
+%   {\jobname-parrot.csv}
 % $
 %
 % Using |mode=rgb| to draw a short coloured line:\par\nobreak
@@ -570,6 +585,11 @@ and the derived files           pxpic.pdf
 %     \end{options}
 %     The initial value is |none|, the default used if you don't provide a value
 %     is |full|.
+%   \item[file=\meta{bool}]
+%     If you pass in |true| the mandatory argument of \CS{pxpic} becomes a file
+%     name which's contents are used as a \meta{pixel list}. Using |false|
+%     results in the default behaviour of a \meta{pixel list}. If you omit the
+%     value the same as |true| is used.
 %   \item[gap-hack=\meta{dimen}]
 %     To fix the issues with visible gaps in \textsc{pdf} viewers you can
 %     introduce some negative kerns to make the pixels overlap (lines overlap to
@@ -974,6 +994,40 @@ and the derived files           pxpic.pdf
   }
 %    \end{macrocode}
 %
+% We also want to be able to grab the \meta{pixel list} from a file, and we need
+% a key to define this behaviour.
+%    \begin{macrocode}
+\ekvdef{pxpic}{file}
+  {%
+    \@ifundefined{pxpic@file@#1}%
+      {\pxpic@err@unknown@file{#1}}%
+      {\csname pxpic@file@#1\endcsname}%
+  }
+\ekvdefNoVal{pxpic}{file}{\pxpic@file@true}
+%    \end{macrocode}
+% The macro \CS{pxpic@@file@or@list} will get the argument in two sets of
+% braces. In the |false| case things are easy, we just directly go over to the
+% expansion step. In the |true| case we input the file.
+%    \begin{macrocode}
+\ExplSyntaxOn
+\protected\def\pxpic@file@true
+  {
+    \def\pxpic@@file@or@list ##1
+      {
+        \file_get:nnNTF ##1 {} \l_tmpa_tl
+          {
+            \ekv@exparg { \expandafter\pxpic@parse\pxpic@expansion }
+              { \expandafter { \l_tmpa_tl } }
+          }
+          { \pxpic@err@file@not@found ##1 }
+      }
+  }
+\ExplSyntaxOff
+\protected\def\pxpic@file@false
+  {\def\pxpic@@file@or@list{\expandafter\pxpic@parse\pxpic@expansion}}
+\pxpic@file@false
+%    \end{macrocode}
+%
 %
 % \subsection{User macros}\label{sec:implementation:pxpiclogo}
 %
@@ -1000,7 +1054,7 @@ and the derived files           pxpic.pdf
         \advance\pxpicWD\pxpic@kern
         \baselineskip=\pxpicHT
         \kern\pxpic@kern
-        \expandafter\pxpic@parse\pxpic@expansion{{#2}}%
+        \pxpic@@file@or@list{{#2}}%
       }%
     \pxpic@after@inner@box
     \egroup
@@ -1410,6 +1464,10 @@ and the derived files           pxpic.pdf
   {\PackageError{pxpic}{Unknown expansion mode `#1'}{}}
 \newcommand\pxpic@err@unknown@lines[1]
   {\PackageError{pxpic}{Unknown lines mode `#1'}{}}
+\newcommand\pxpic@err@unknown@file[1]
+  {\PackageError{pxpic}{Unknown file value `#1'}{}}
+\newcommand\pxpic@err@file@not@found[1]
+  {\PackageError{pxpic}{Couldn't find file #1}{}}
 %    \end{macrocode}
 % \end{macro}
 %

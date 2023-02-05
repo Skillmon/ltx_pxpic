@@ -31,10 +31,11 @@ unpackfiles = sourcefiles
 -- which files to put in the tds
 installfiles = {"pxpic.sty"}
 textfiles    = {"README.md", "CTAN.md"}
-docfiles     = {"pxpic.pdf"}
+docfiles     = {"pxpic.pdf", "pxpic-parrot.csv"}
 
 -- how the documentation is build
 typesetfiles = {"pxpic.dtx"}
+typesetsuppfiles = {}
 typesetruns  = 4
 
 packtdszip   = false
