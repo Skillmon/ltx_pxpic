@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 # pxpic -- draw pixel pictures
 
-Version 2021-12-12 v1.3
+Version 2023-02-07 v1.4
 
 Released under the LaTeX Project Public License v1.3c or later
 See http://www.latex-project.org/lppl.txt
@@ -10,7 +10,7 @@ Hosted at https://github.com/Skillmon/ltx_pxpic
 
 -------------------------------------------------------------------------------
 
-Copyright (C) 2021-2022 Jonathan P. Spratte
+Copyright (C) 2021-2023 Jonathan P. Spratte
 
 This  work may be  distributed and/or  modified under  the conditions  of the
 LaTeX Project Public License (LPPL),  either version 1.3c  of this license or
