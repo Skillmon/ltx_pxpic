@@ -329,7 +329,7 @@ and the derived files           pxpic.pdf
 %   |t|), you can further tweak this using \CS{raisebox} (or, if you want,
 %   \TeX's \CS{raise} and \CS{lower} primitives).
 %
-%   If you used the |file| option the mandatory argument might be a file name
+%   If you used the |file| option the mandatory argument should be a file name
 %   containing a \meta{pixel list} instead of the \meta{pixel list} itself.
 % \end{function}
 %
@@ -840,6 +840,20 @@ and the derived files           pxpic.pdf
 %     {kkkw}
 %   }
 % \end{minipage}
+%
+% \paragraph{Exploiting the \texttt{gap-hack} to draw a grid:}
+% It is possible to exploit the |gap-hack| option to draw a grid around your
+% pixels (at least for a rectangular picture). For this we simply set a coloured
+% background and use a negative |gap-hack| value:\par
+% \noindent
+% \codeexample$
+% \newcommand\gridpxpic[3][]
+%   {{\fboxsep=#2\colorbox{black}{\pxpic[#1,gap-hack=-\fboxsep]{#3}}}}
+% \gridpxpic
+%   [colours={g=green,w=white},size=8pt]
+%   {1pt}
+%   {{gwgw}{wgwg}}%
+% $
 %
 %
 % \end{documentation}^^A=<<
