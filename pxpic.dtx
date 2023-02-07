@@ -880,6 +880,14 @@ and the derived files           pxpic.pdf
 \pxpic@kern=\z@
 %    \end{macrocode}
 % \end{variable}
+% \begin{macro}[internal]{\pxpic@@kern}
+%   For some simplification of the output box (removing unnecessary kerns) we
+%   don't directly use \CS{kern} but one step of indirection. This macro is
+%   locally turned into \CS{@gobble} if \CS{pxpic@kern} is equal to \CS{z@}.
+%    \begin{macrocode}
+\def\pxpic@@kern#1{\kern#1\pxpic@kern}
+%    \end{macrocode}
+% \end{macro}
 % \begin{macro}[internal]{\pxpic@inner@box,\pxpic@after@inner@box}
 %   To get different vertical alignments we nest one of |\vbox|, |\vtop|, and a
 %   lowered |\vbox| inside the outer |\hbox|. The macro \cs{pxpic@inner@box}
@@ -1050,9 +1058,19 @@ and the derived files           pxpic.pdf
       {%
         \let\px\pxpic@px
         \let\pxskip\pxpic@skip
-        \advance\pxpicHT\pxpic@kern
-        \advance\pxpicWD\pxpic@kern
+        \ifdim\pxpic@kern=\z@
+          \let\pxpic@@kern\@gobble
+        \else
+          \advance\pxpicHT\pxpic@kern
+          \advance\pxpicWD\pxpic@kern
+        \fi
         \baselineskip=\pxpicHT
+%    \end{macrocode}
+%   This here is the only spot we use \CS{kern} directly instead of the
+%   wrapping \CS{pxpic@@kern}. Even if this is effectively a |\kern0pt| the
+%   vertical alignment in top-aligned boxes is different this way (aligning at
+%   the top of the top row instead of the bottom).
+%    \begin{macrocode}
         \kern\pxpic@kern
         \pxpic@@file@or@list{{#2}}%
       }%
@@ -1226,14 +1244,14 @@ and the derived files           pxpic.pdf
     \long\def\pxpic@@parse##1#1%
       {%
         \pxpic@ifend##1\pxpic@done\pxpic@end
-        \kern-\pxpic@kern
-        \hbox{\kern\pxpic@kern\pxpic@parseline##1#2\pxpic@end#2}%
+        \pxpic@@kern-%
+        \hbox{\pxpic@@kern+\pxpic@parseline##1#2\pxpic@end#2}%
         \pxpic@@parse
       }%
     \long\def\pxpic@parseline##1#2%
       {%
         \pxpic@ifend##1\pxpic@linedone\pxpic@end
-        \kern-\pxpic@kern
+        \pxpic@@kern-%
         \pxpic@parse@px{##1}%
         \pxpic@parseline
       }
@@ -1272,7 +1290,7 @@ and the derived files           pxpic.pdf
 %   defined here.
 %    \begin{macrocode}
 \pxpic@@parse@group
-\long\def\pxpic@done\pxpic@end\kern-\pxpic@kern\hbox#1\pxpic@@parse{}
+\long\def\pxpic@done\pxpic@end\pxpic@@kern-\hbox#1\pxpic@@parse{}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -1287,7 +1305,7 @@ and the derived files           pxpic.pdf
 %   maybe fix the gap issue by letting the pixels overlap a bit.
 %    \begin{macrocode}
 \long\def\pxpic@linedone
-    \pxpic@end\kern-\pxpic@kern\pxpic@parse@px#1\pxpic@parseline
+    \pxpic@end\pxpic@@kern-\pxpic@parse@px#1\pxpic@parseline
   {}
 %    \end{macrocode}
 % \end{macro}
