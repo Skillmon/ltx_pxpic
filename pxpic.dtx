@@ -54,7 +54,7 @@ and the derived files           pxpic.pdf
   \expandafter\endgroup
 \fi
 %
-\ProvidesFile{pxpic.dtx}[2023-02-07 v1.4 draw pixel pictures]
+\ProvidesFile{pxpic.dtx}[2023-02-11 v1.4 draw pixel pictures]
 \PassOptionsToPackage{full}{textcomp}
 \documentclass{l3doc}
 \RequirePackage[oldstylenums,nott]{kpfonts}
@@ -240,7 +240,7 @@ and the derived files           pxpic.pdf
           \Large draw pixel pictures^^A
         }{pxpic - draw pixel pictures}^^A
     }
-  \date{2023-02-07 v1.4}
+  \date{2023-02-11 v1.4}
   \author{Jonathan P. Spratte\thanks{\protect\randomize{jspratte@yahoo.de}}}
   \DocInput{pxpic.dtx}
 \end{document}
@@ -776,11 +776,31 @@ and the derived files           pxpic.pdf
 % errors less obvious). You can play with the value and decide for yourself
 % what's the lesser evil. Or you do like me, don't use |gap-hack| and blame the
 % viewers. Here are examples in which you can compare (the |gap-hack| is chosen
-% way too big in this example and skips are used close to white pixels on
-% purpose, but it illustrates the effects; the third output, not shown in the
-% code, uses a more reasonable |gap-hack=.2pt|):\par\nobreak
+% way too big in the first example and skips are used close to white pixels on
+% purpose, but it illustrates the effects):\par\nobreak
+% \begingroup
+% \footnotesize
+% \def\mypxpic#1%
+%   {^^A
+%     \pxpic
+%       [
+%          gap-hack=#1
+%         ,colours={k=black,g=green,w=white}
+%         ,skip=.
+%         ,size=10pt
+%         ,t
+%       ]
+%       {
+%         {kkkkk}
+%         {kgggk}
+%         {kwg.k}
+%         {kg.gk}
+%         {kgwk}
+%         {kkkw}
+%       }^^A
+%   }^^A
 % \noindent
-% \begin{minipage}[c]{.5\linewidth}\footnotesize
+% \begin{minipage}[c]{.45\linewidth}^^A
 % \begin{lstlisting}
 % \pxpicsetup
 %   {
@@ -788,15 +808,6 @@ and the derived files           pxpic.pdf
 %     ,skip=.
 %     ,size=10pt
 %     ,t
-%   }
-% \pxpic[gap-hack=2pt]
-%   {
-%     {kkkkk}
-%     {kgggk}
-%     {kwg.k}
-%     {kg.gk}
-%     {kgwk}
-%     {kkkw}
 %   }
 % \pxpic
 %   {
@@ -809,37 +820,12 @@ and the derived files           pxpic.pdf
 %   }
 % \end{lstlisting}
 % \end{minipage}
-% \begin{minipage}[c]{.45\linewidth}
-% \pxpicsetup{colours={k=black,g=green,w=white},skip=.,size=10pt,t}
-% \leavevmode
-% \pxpic[gap-hack=2pt]
-%   {
-%     {kkkkk}
-%     {kgggk}
-%     {kwg.k}
-%     {kg.gk}
-%     {kgwk}
-%     {kkkw}
-%   }
-% \pxpic
-%   {
-%     {kkkkk}
-%     {kgggk}
-%     {kwg.k}
-%     {kg.gk}
-%     {kgwk}
-%     {kkkw}
-%   }
-% \pxpic[gap-hack=.2pt]
-%   {
-%     {kkkkk}
-%     {kgggk}
-%     {kwg.k}
-%     {kg.gk}
-%     {kgwk}
-%     {kkkw}
-%   }
-% \end{minipage}
+% \fontfamily{txtt}\selectfont
+% \begin{tabular}[c]{ccc}
+%   \texttt{gap-hack=2pt} & \texttt{gap-hack=0pt} & \texttt{gap-hack=.2pt} \\
+%   \mypxpic{2pt} & \mypxpic{0pt} & \mypxpic{.2pt} \\
+% \end{tabular}
+% \endgroup
 %
 % \paragraph{Exploiting the \texttt{gap-hack} to draw a grid:}
 % It is possible to exploit the |gap-hack| option to draw a grid around your
@@ -848,7 +834,7 @@ and the derived files           pxpic.pdf
 % \noindent
 % \codeexample$
 % \newcommand\gridpxpic[3][]
-%   {{\fboxsep=#2\colorbox{black}{\pxpic[#1,gap-hack=-\fboxsep]{#3}}}}
+%   {{\setlength\fboxsep{#2}\colorbox{black}{\pxpic[#1,gap-hack=-\fboxsep]{#3}}}}
 % \gridpxpic
 %   [colours={g=green,w=white},size=8pt]
 %   {1pt}
@@ -869,7 +855,7 @@ and the derived files           pxpic.pdf
 %
 % Report who we are
 %    \begin{macrocode}
-\ProvidesPackage{pxpic}[2023-02-07 v1.4 draw pixel pictures]
+\ProvidesPackage{pxpic}[2023-02-11 v1.4 draw pixel pictures]
 %    \end{macrocode}
 % and load dependencies
 %    \begin{macrocode}
