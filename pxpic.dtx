@@ -1161,8 +1161,8 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \protected\def\pxpicnewcolorlist#1%
   {%
-    \@ifundefined{pxpic@colorlist@#1}
-      {\pxpicsetcolorlist{#1}}
+    \@ifundefined{pxpic@colorlist@#1}%
+      {\pxpicsetcolorlist{#1}}%
       {\pxpic@err@defined@colorlist{#1}\@gobble}%
   }
 \protected\def\pxpicsetcolorlist#1%
@@ -1175,8 +1175,8 @@ and the derived files           pxpic.pdf
   }
 \protected\def\pxpicaddcolorlist#1%
   {%
-    \@ifundefined{pxpic@colorlist@#1}
-      {\pxpic@err@unknown@colorlist{#1}\@gobble}
+    \@ifundefined{pxpic@colorlist@#1}%
+      {\pxpic@err@unknown@colorlist{#1}\@gobble}%
       {\expandafter\pxpic@addcolorlist\csname pxpic@colorlist@#1\endcsname}%
   }
 \protected\long\def\pxpic@addcolorlist#1#2%
@@ -1323,7 +1323,7 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \newcommand\pxpic@parse@px@px[1]
   {%
-    \ekvifdefinedNoVal{pxpic@px}{#1}
+    \ekvifdefinedNoVal{pxpic@px}{#1}%
       {\csname\ekv@name{pxpic@px}{#1}N\endcsname}%
       {%
         \pxpic@err@unknown@px{#1}%
@@ -1340,8 +1340,8 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \newcommand\pxpic@parse@px@named[1]
   {%
-    \pxpic@ifempty{#1}
-      {\pxskip}
+    \pxpic@ifempty{#1}%
+      {\pxskip}%
       {{\@declaredcolor{#1}\px}}%
   }
 %    \end{macrocode}
@@ -1371,8 +1371,8 @@ and the derived files           pxpic.pdf
   {%
     \pxpicnewmode{#1}%
       {%
-        \pxpic@ifempty{##1}
-          {\pxskip}
+        \pxpic@ifempty{##1}%
+          {\pxskip}%
           {{\@undeclaredcolor[#1]{##1}\px}}%
       }%
   }
@@ -1449,8 +1449,8 @@ and the derived files           pxpic.pdf
   {%
     \unexpanded\iffalse{\fi
     \pxpic@ifbracket\pxpic@end#2.\pxpic@end[]\pxpic@end
-      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@a}
-      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@b}
+      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@a}%
+      {\expandafter\expandafter\expandafter\pxpic@openbrace\pxpic@setcolor@b}%
       {#1}{#2}%
     }%
   }
