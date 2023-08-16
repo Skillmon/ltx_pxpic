@@ -1096,7 +1096,10 @@ and the derived files           pxpic.pdf
 %   correct and the output is bottom aligned.
 %    \begin{macrocode}
 \ekvcompile\pxpiclogo@settings#1{pxpic}
-  {size=#1,gap-hack=\z@,b,mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.}
+  {
+     size=#1,gap-hack=\z@,b,mode=px,colours={o=[HTML]{9F393D},g=black!75},skip=.
+    ,lines=group
+  }
 \newcommand*\pxpiclogo[1][.13ex]
   {%
     \begingroup
