@@ -1,7 +1,7 @@
 -------------------------------------------------------------------------------
 # pxpic -- draw pixel pictures
 
-Version 2023-02-11 v1.4
+Version 2023-08-16 v1.5
 
 Released under the LaTeX Project Public License v1.3c or later
 See http://www.latex-project.org/lppl.txt
