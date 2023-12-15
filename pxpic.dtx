@@ -139,7 +139,7 @@ and the derived files           pxpic.pdf
 \DoNotIndex{\baselineskip,\begingroup,\bgroup,\box}
 \DoNotIndex{\csname}
 \DoNotIndex{\def,\detokenize,\dimexpr}
-\DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvifdefinedNoVal,\ekvletkv}
+\DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvletkv,\ekvletkvNoVal}
 \DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\ekvmorekv}
 \DoNotIndex{\endcsname,\endgroup,\expandafter}
 \DoNotIndex{\hbox,\hskip,\ht}
@@ -152,7 +152,7 @@ and the derived files           pxpic.pdf
 \DoNotIndex{\setbox}
 \DoNotIndex{\@declaredcolor,\@empty,\@firstofone,\@gobble,\@ifdefinable}
 \DoNotIndex{\@ifnextchar,\@ifundefined,\@undeclaredcolor}
-\DoNotIndex{\ekv@ifempty,\ekv@name,\p@,\z@}
+\DoNotIndex{\ekv@ifempty,\p@,\z@}
 \DoNotIndex{\unexpanded}
 \DoNotIndex{\vbox,\vrule,\vtop}
 \@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
@@ -862,6 +862,7 @@ and the derived files           pxpic.pdf
 \RequirePackage{xcolor}
 \RequirePackage{expkv}
 %    \end{macrocode}
+%
 % \begin{variable}{\pxpicHT,\pxpicWD}
 %   These two variables store the height and width of a pixel.
 %    \begin{macrocode}
@@ -902,15 +903,48 @@ and the derived files           pxpic.pdf
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}[internal]
+%   {
+%     \pxpic@ifdef,\pxpic@ifdef@a,\pxpic@ifdef@b,
+%     \pxpic@ifdef@F,\pxpic@ifdef@f,\pxpic@ifdef@t
+%   }
+%   We'll often want to check if a macro is defined and if so use it. So we'll
+%   do this with an auxiliary. This'll help us to parse the options, but also to
+%   check whether a |px| is defined later on.
+%
+%   The macro will take three arguments, the first is code to put before the
+%   control sequence, the second is the control sequence's name (so should yield
+%   the control sequence after |\csname|), and the third is code to execute if
+%   the control sequence isn't defined.
+%    \begin{macrocode}
+\long\def\pxpic@ifdef#1#2%
+  {%
+    \ifcsname#2\endcsname\pxpic@ifdef@a\fi
+    \pxpic@ifdef@F#2\endcsname\pxpic@ifdef@end{#1}%
+  }
+\def\pxpic@ifdef@a\fi\pxpic@ifdef@F{\fi\expandafter\pxpic@ifdef@b\csname}
+\long\def\pxpic@ifdef@b#1\pxpic@ifdef@end
+  {\ifx#1\relax\pxpic@ifdef@f\fi\pxpic@ifdef@t#1}
+\long\def\pxpic@ifdef@f\fi\pxpic@ifdef@t#1#2#3{\fi#3}
+\long\def\pxpic@ifdef@t#1#2#3{#2#1}
+\long\def\pxpic@ifdef@F#1\endcsname\pxpic@ifdef@end#2#3{#3}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[internal]{\pxpic@pxname,\pxpic@pxdef}
+%   These auxiliaries store the form the |px| macro names are built, and provide
+%   a shorthand to define new ones.
+%    \begin{macrocode}
+\newcommand\pxpic@pxname[1]{pxpic@px@\detokenize{#1}}
+\newcommand*\pxpic@pxdef[1]{\expandafter\def\csname\pxpic@pxname{#1}\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
 %
 % \subsection{Options}
 %
 % We define the options using \expkv\ directly (no fancy options are involved
-% and these are just a few anyway).
-%
-% The first few options are straight forward. We use \expkv's name space to
-% actually store the |skip| and |px| definitions, hence we use
-% \CS{ekvdefNoVal} in the code of |skip|.
+% and these are just a few anyway). The first few options are straight forward.
 %
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{size}
@@ -918,7 +952,7 @@ and the derived files           pxpic.pdf
 \protected\ekvdef{pxpic}{ht}{\pxpicHT=\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{wd}{\pxpicWD=\dimexpr#1\relax}
 \protected\ekvdef{pxpic}{gap-hack}{\pxpic@kern=\dimexpr#1\relax}
-\protected\ekvdef{pxpic}{skip}{\ekvdefNoVal{pxpic@px}{#1}{\pxskip}}
+\protected\ekvdef{pxpic}{skip}{\pxpic@pxdef{#1}{\pxskip}}
 %    \end{macrocode}
 % The |colours| option is parsed using \CS{ekvparse} and \CS{pxpic@setcolor}.
 %    \begin{macrocode}
@@ -930,22 +964,14 @@ and the derived files           pxpic.pdf
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{mode}
   {%
-    \@ifundefined{pxpic@parse@px@#1}%
-      {\pxpic@err@unknown@mode{#1}}%
-      {%
-        \expandafter\let\expandafter\pxpic@parse@px
-          \csname pxpic@parse@px@#1\endcsname
-      }%
+    \pxpic@ifdef
+      {\let\pxpic@parse@px}{pxpic@parse@px@#1}{\pxpic@err@unknown@mode{#1}}%
   }
 %    \end{macrocode}
 % A similar check is done for the |colour-list| option.
 %    \begin{macrocode}
 \protected\ekvdef{pxpic}{color-list}
-  {%
-    \@ifundefined{pxpic@colorlist@#1}%
-      {\pxpic@err@unknown@colorlist{#1}}%
-      {\csname pxpic@colorlist@#1\endcsname}%
-  }
+  {\pxpic@ifdef{}{pxpic@colorlist@#1}{\pxpic@err@unknown@colorlist{#1}}}
 \ekvletkv{pxpic}{colour-list}{pxpic}{color-list}
 %    \end{macrocode}
 % The alignment options set the internals |\pxpic@inner@box| and
@@ -974,11 +1000,7 @@ and the derived files           pxpic.pdf
 % far as possible.
 %    \begin{macrocode}
 \ekvdef{pxpic}{expansion}
-  {%
-    \@ifundefined{pxpic@expansion@#1}%
-      {\pxpic@err@unknown@expansion{#1}}%
-      {\csname pxpic@expansion@#1\endcsname}%
-  }
+  {\pxpic@ifdef{}{pxpic@expansion@#1}{\pxpic@err@unknown@expansion{#1}}}
 \ekvdefNoVal{pxpic}{expansion}{\pxpic@expansion@full}
 \ekvletkv     {pxpic}{exp}{pxpic}{expansion}
 \ekvletkvNoVal{pxpic}{exp}{pxpic}{expansion}
@@ -995,22 +1017,13 @@ and the derived files           pxpic.pdf
 % behaviour is a bit down the road, here we only initialise the keys.
 %    \begin{macrocode}
 \ekvdef{pxpic}{lines}
-  {%
-    \@ifundefined{pxpic@@parse@#1}%
-      {\pxpic@err@unknown@lines{#1}}%
-      {\csname pxpic@@parse@#1\endcsname}%
-  }
+  {\pxpic@ifdef{}{pxpic@@parse@#1}{\pxpic@err@unknown@lines{#1}}}
 %    \end{macrocode}
 %
 % We also want to be able to grab the \meta{pixel list} from a file, and we need
 % a key to define this behaviour.
 %    \begin{macrocode}
-\ekvdef{pxpic}{file}
-  {%
-    \@ifundefined{pxpic@file@#1}%
-      {\pxpic@err@unknown@file{#1}}%
-      {\csname pxpic@file@#1\endcsname}%
-  }
+\ekvdef{pxpic}{file}{\pxpic@ifdef{}{pxpic@file@#1}{\pxpic@err@unknown@file{#1}}}
 \ekvdefNoVal{pxpic}{file}{\pxpic@file@true}
 %    \end{macrocode}
 % The macro \CS{pxpic@@file@or@list} will get the argument in two sets of
@@ -1024,7 +1037,7 @@ and the derived files           pxpic.pdf
       {
         \file_get:nnNTF ##1 {} \l_tmpa_tl
           {
-            \ekv@exparg { \expandafter\pxpic@parse\pxpic@expansion }
+            \exp_args:NNNo \expandafter\pxpic@parse\pxpic@expansion
               { \expandafter { \l_tmpa_tl } }
           }
           { \pxpic@err@file@not@found ##1 }
@@ -1132,7 +1145,7 @@ and the derived files           pxpic.pdf
 %   Straight forward, just let the |px| macro to an undefined macro.
 %    \begin{macrocode}
 \newcommand\pxpicforget[1]
-  {\expandafter\let\csname\ekv@name{pxpic@px}{#1}N\endcsname\pxpic@undef}
+  {\expandafter\let\csname\pxpic@pxname{#1}\endcsname\pxpic@undef}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1178,9 +1191,8 @@ and the derived files           pxpic.pdf
   }
 \protected\def\pxpicaddcolorlist#1%
   {%
-    \@ifundefined{pxpic@colorlist@#1}%
+    \pxpic@ifdef\pxpic@addcolorlist{pxpic@colorlist@#1}%
       {\pxpic@err@unknown@colorlist{#1}\@gobble}%
-      {\expandafter\pxpic@addcolorlist\csname pxpic@colorlist@#1\endcsname}%
   }
 \protected\long\def\pxpic@addcolorlist#1#2%
   {%
@@ -1319,15 +1331,13 @@ and the derived files           pxpic.pdf
 % The modes define how a single element of the \meta{pixel list} is parsed.
 %
 % \begin{macro}[internal]{\pxpic@parse@px@px,\pxpic@parse@px}
-%   In the |px| mode we check whether the pixel is defined (using the name space
-%   of \expkv), if so call it, else throw an error and skip. Since this is also
-%   the initial |mode| we \CS{let} the auxiliary macro \CS{pxpic@parse@px} to
-%   this mode here.
+%   In the |px| mode we check whether the pixel is defined, if so call it, else
+%   throw an error and skip. Since this is also the initial |mode| we \CS{let}
+%   the auxiliary macro \CS{pxpic@parse@px} to this mode here.
 %    \begin{macrocode}
 \newcommand\pxpic@parse@px@px[1]
   {%
-    \ekvifdefinedNoVal{pxpic@px}{#1}%
-      {\csname\ekv@name{pxpic@px}{#1}N\endcsname}%
+    \pxpic@ifdef{}{\pxpic@pxname{#1}}%
       {%
         \pxpic@err@unknown@px{#1}%
         \pxskip
@@ -1425,16 +1435,8 @@ and the derived files           pxpic.pdf
       \pxpic@setcolor@a\pxpic@setcolor@b
       {#1}{#2}%
   }
-\newcommand\pxpic@setcolor@a[2]
-  {%
-    \expandafter\def\csname\ekv@name{pxpic@px}{#1}N\endcsname
-      {{\@declaredcolor{#2}\px}}%
-  }
-\newcommand\pxpic@setcolor@b[2]
-  {%
-    \expandafter\def\csname\ekv@name{pxpic@px}{#1}N\endcsname
-      {{\@undeclaredcolor#2\px}}%
-}
+\newcommand\pxpic@setcolor@a[2]{\pxpic@pxdef{#1}{{\@declaredcolor{#2}\px}}}
+\newcommand\pxpic@setcolor@b[2]{\pxpic@pxdef{#1}{{\@undeclaredcolor#2\px}}}
 %    \end{macrocode}
 % \end{macro}
 %
