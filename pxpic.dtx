@@ -208,8 +208,7 @@ and the derived files           pxpic.pdf
   {
     \begin{minipage}[c]{.5\linewidth}
       #1
-      \newlinechar=\endlinechar
-      \exp_args:Nx \scantokens
+      \__pxpic_doc_obeyedline_scantokens:n
         {
           \string\begin{lstlisting}
             #3
@@ -218,10 +217,28 @@ and the derived files           pxpic.pdf
     \end{minipage}
     \begin{minipage}[c]{.45\linewidth}
       #2
-      \newlinechar=\endlinechar
-      \exp_args:Nx \scantokens {#3}
+      \__pxpic_doc_obeyedline_scantokens:n {#3}
     \end{minipage}
     \par
+  }
+\IfFormatAtLeastTF{2024-06-01}
+  {
+    \cs_new_protected:Npn \__pxpic_doc_obeyedline_scantokens:n
+      {
+        \newlinechar=\endlinechar
+        \group_begin:
+          \cs_set:Npx \obeyedline { \char_generate:nn { 13 } { 12 } }
+          \exp_args:NNe
+        \group_end:
+        \scantokens
+      }
+  }
+  {
+    \cs_new_protected:Npn \__pxpic_doc_obeyedline_scantokens:n
+      {
+        \newlinechar=\endlinechar \scan_stop:
+        \exp_args:Ne \scantokens
+      }
   }
 \ExplSyntaxOff
 \begin{document}
