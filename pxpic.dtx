@@ -1484,53 +1484,39 @@ and the derived files           pxpic.pdf
 %
 % \begin{macro}[internal]
 %   {
+%     \pxpic@err,
 %     \pxpic@err@noval,\pxpic@err@unknown@px,\pxpic@err@unknown@mode,
 %     \pxpic@err@unknown@colorlist,\pxpic@err@defined@colorlist,
 %     \pxpic@err@unknown@expansion
 %   }
 %   These are just some macros throwing errors, nothing special here.
 %    \begin{macrocode}
+\newcommand\pxpic@err[1]{\PackageError{pxpic}{#1}{}}
 \newcommand\pxpic@err@noval[1]
-  {\PackageError{pxpic}{Missing colour definition for name `\detokenize{#1}'}{}}
+  {\pxpic@err{Missing colour definition for name `\detokenize{#1}'}}
 \newcommand\pxpic@err@unknown@px[1]
-  {\PackageError{pxpic}{Unknown pixel `\detokenize{#1}'. Skipping}{}}
+  {\pxpic@err{Unknown pixel `\detokenize{#1}'. Skipping}}
 \newcommand\pxpic@err@unknown@mode[1]
-  {\PackageError{pxpic}{Unknown mode `#1'}{}}
+  {\pxpic@err{Unknown mode `#1'}}
 \newcommand\pxpic@err@unknown@colorlist[1]
-  {\PackageError{pxpic}{Unknown colour list `#1'}{}}
+  {\pxpic@err{Unknown colour list `#1'}}
 \newcommand\pxpic@err@defined@colorlist[1]
-  {\PackageError{pxpic}{Colour list `#1' already defined}{}}
+  {\pxpic@err{Colour list `#1' already defined}}
 \newcommand\pxpic@err@unknown@expansion[1]
-  {\PackageError{pxpic}{Unknown expansion mode `#1'}{}}
+  {\pxpic@err{Unknown expansion mode `#1'}}
 \newcommand\pxpic@err@unknown@lines[1]
-  {\PackageError{pxpic}{Unknown lines mode `#1'}{}}
+  {\pxpic@err{Unknown lines mode `#1'}}
 \newcommand\pxpic@err@unknown@file[1]
-  {\PackageError{pxpic}{Unknown file value `#1'}{}}
+  {\pxpic@err{Unknown file value `#1'}}
 \newcommand\pxpic@err@file@not@found[1]
-  {\PackageError{pxpic}{Couldn't find file #1}{}}
+  {\pxpic@err{Couldn't find file #1}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}[internal]{\pxpic@experr}
-%   This macro can be used to throw an error expandably. For this an undefined
-%   control sequence \verb*|\pxpic Error:| is used. The group containing
-%   \CS{expandafter} keeps the definition of \verb*|\pxpic Error:| local (it is
-%   \CS{relax} after the \CS{csname}) so that it is undefined when it's used.
-%   The \CS{@firstofone} is needed to get the readable output (now the undefined
-%   macro and actual message are always the same argument).
+%   We simply use \CS{ekverr}'s mechanism for expandable error messages.
 %    \begin{macrocode}
-\def\pxpic@experr#1%
-  {%
-    \long\def\pxpic@experr##1%
-      {%
-        \expandafter\expandafter\expandafter
-        \pxpic@ifend
-          \@firstofone{#1##1.}%
-        \pxpic@end
-      }%
-  }
-\begingroup\expandafter\endgroup
-\expandafter\pxpic@experr\csname pxpic Error:\endcsname
+\def\pxpic@experr{\ekverr{pxpic}}
 %    \end{macrocode}
 % \end{macro}
 %
