@@ -95,9 +95,63 @@ and the derived files           pxpic.pdf
 \protected\def\meta #1{\texttt{\metaORIG{#1}}}
 \newcommand*\CS{\cs[no-index]}
 \renewcommand*\thefootnote{\fnsymbol{footnote}}
+\hypersetup{linkcolor=red!80!black,urlcolor=purple!80!black}
+\DoNotIndex{\advance}
+\DoNotIndex{\baselineskip,\begingroup,\bgroup,\box}
+\DoNotIndex{\csname}
+\DoNotIndex{\def,\detokenize,\dimexpr}
+\DoNotIndex{\edef,\egroup,\ekvdef,\ekverr,\ekvdefNoVal,\ekvletkv,\ekvletkvNoVal}
+\DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\ekvmorekv,\expanded}
+\DoNotIndex{\ExplSyntaxOn,\ExplSyntaxOff}
+\DoNotIndex{\endcsname,\endgroup,\expandafter}
+\DoNotIndex{\hbox,\hskip,\ht}
+\DoNotIndex{\iffalse,\ifcsname,\ifdim,\ifx,\else,\fi,\fi,\fi,\fi}
+\DoNotIndex{\kern}
+\DoNotIndex{\leavevmode,\let,\long,\lower}
+\DoNotIndex{\newcommand,\newdimen}
+\DoNotIndex{\PackageError,\protected,\ProvidesPackage}
+\DoNotIndex{\relax,\RequirePackage}
+\DoNotIndex{\setbox}
+\DoNotIndex{\@declaredcolor,\@empty,\@firstofone,\@gobble,\@ifdefinable}
+\DoNotIndex{\@ifnextchar,\@ifundefined,\@undeclaredcolor}
+\DoNotIndex{\ekv@ifempty,\p@,\z@}
+\DoNotIndex{\unexpanded}
+\DoNotIndex{\vbox,\vrule,\vtop}
+\makeatletter
+\@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
+\makeatother
+\newenvironment{options}[1][]
+  {%
+    \begin{description}
+      [
+        style=nextline
+        ,font=\normalfont\ttfamily
+        ,labelindent=-.5\marginparwidth
+        ,labelwidth=\dimexpr.5\marginparwidth-5pt\relax
+        ,labelsep*=5pt
+        ,leftmargin=!
+        ,#1
+      ]%
+    \renewenvironment{options}[1][]
+      {%
+        \begin{description}
+          [
+            style=nextline
+            ,font=\normalfont\ttfamily
+            ,labelwidth=\dimexpr.25\marginparwidth-5pt\relax
+            ,labelsep*=5pt
+            ,leftmargin=!
+            ,#1
+          ]%
+      }
+      {\end{description}}%
+  }
+  {\end{description}}
+
+^^A Logos >>=
+\makeatletter
 \definecolor{pxpicred}{HTML}{9F393D}
 \colorlet{pxpicgrey}{black!75}
-\makeatletter
 \newcommand*\pxpicname
   {^^A
     \texorpdfstring
@@ -134,56 +188,6 @@ and the derived files           pxpic.pdf
       }
       {expkv}^^A
   }
-\hypersetup{linkcolor=red!80!black,urlcolor=purple!80!black}
-\DoNotIndex{\advance}
-\DoNotIndex{\baselineskip,\begingroup,\bgroup,\box}
-\DoNotIndex{\csname}
-\DoNotIndex{\def,\detokenize,\dimexpr}
-\DoNotIndex{\edef,\egroup,\ekvdef,\ekvdefNoVal,\ekvletkv,\ekvletkvNoVal}
-\DoNotIndex{\ekvparse,\ekvsetdef,\ekvcompile,\ekvmorekv}
-\DoNotIndex{\endcsname,\endgroup,\expandafter}
-\DoNotIndex{\hbox,\hskip,\ht}
-\DoNotIndex{\iffalse,\fi}
-\DoNotIndex{\kern}
-\DoNotIndex{\leavevmode,\let,\long,\lower}
-\DoNotIndex{\newcommand,\newdimen}
-\DoNotIndex{\PackageError,\protected,\ProvidesPackage}
-\DoNotIndex{\relax,\RequirePackage}
-\DoNotIndex{\setbox}
-\DoNotIndex{\@declaredcolor,\@empty,\@firstofone,\@gobble,\@ifdefinable}
-\DoNotIndex{\@ifnextchar,\@ifundefined,\@undeclaredcolor}
-\DoNotIndex{\ekv@ifempty,\p@,\z@}
-\DoNotIndex{\unexpanded}
-\DoNotIndex{\vbox,\vrule,\vtop}
-\@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
-\makeatother
-\newenvironment{options}[1][]
-  {%
-    \begin{description}
-      [
-        style=nextline
-        ,font=\normalfont\ttfamily
-        ,labelindent=-.5\marginparwidth
-        ,labelwidth=\dimexpr.5\marginparwidth-5pt\relax
-        ,labelsep*=5pt
-        ,leftmargin=!
-        ,#1
-      ]%
-    \renewenvironment{options}[1][]
-      {%
-        \begin{description}
-          [
-            style=nextline
-            ,font=\normalfont\ttfamily
-            ,labelwidth=\dimexpr.25\marginparwidth-5pt\relax
-            ,labelsep*=5pt
-            ,leftmargin=!
-            ,#1
-          ]%
-      }
-      {\end{description}}%
-  }
-  {\end{description}}
 ^^A the following pixelart logo is taken from that package's dtx.
 \newcommand*\pixelart
   {^^A
@@ -205,6 +209,8 @@ and the derived files           pxpic.pdf
 \ExplSyntaxOn
 ^^A contains code from https://tex.stackexchange.com/a/25753/117050
 \NewDocumentCommand \codeexample { O{\footnotesize} D(){\leavevmode} +v }
+\makeatother
+^^A =<<
   {
     \begin{minipage}[c]{.5\linewidth}
       #1
