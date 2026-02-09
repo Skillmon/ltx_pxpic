@@ -489,9 +489,10 @@ and the derived files           pxpic.pdf
 %
 % \begin{abstract}
 % \noindent\parfillskip=0pt
-% With \pxpicname\ you draw pictures pixel by pixel. It was inspired by a
+% With \pxpicname\ you draw pictures pixel by pixel in an intuitive way. It was
+% inspired by a
 % \href{https://tex.stackexchange.com/a/63759/117050}
-%      {lovely post by Paulo Cereda},
+%      {lovely post by Paulo Cereda};
 % among other things (most notably a beautiful duck) showcasing the use of
 % characters from the Mario video games by Nintendo in \LaTeX.
 % \end{abstract}
@@ -993,15 +994,16 @@ and the derived files           pxpic.pdf
 % was described as a ``working draft'' by its author. \pxpicname\ wasn't
 % intended as a direct competitor (I already started coding \pxpicname\ when I
 % learned about \pixelart's existence), but I took inspiration from the ``Bugs,
-% Ideas, Undefined behaviours'' section of \pixelart's documentation for the
-% syntax of |mode=px|. Also the |lines=space| option is a copy of the syntax the
-% new stable version of \pixelart\ is using (so images created with it could be
-% processed with \pxpicname\ and vice versa). A third package that allows
-% drawing pixel art is \pkg{PixelArtTikz}, that uses a csv-syntax for its pixel
-% definition lists (you may have luck and the mode |lines=csv| works for lists
-% defined for \pkg{PixelArtTikz}).
+% Ideas, Undefined behaviours'' section of \pixelart's documentation once I had
+% stumbled upon it for the syntax of |mode=px|. Also the |lines=space| option is
+% a copy of the syntax the new stable version of \pixelart\ is using (so images
+% created with it could be processed with \pxpicname\ and vice versa).
 %
-% \paragraph{Regarding the gap issue:}
+% A third package that allows drawing pixel art is \pkg{PixelArtTikz}, that uses
+% a csv-syntax for its pixel definition lists (you may have luck and the mode
+% |lines=csv| works for lists defined for \pkg{PixelArtTikz}).
+%
+% \subsubsection{Regarding the gap issue}
 % The pixels are output touching each other with no real gap, however some
 % \textsc{pdf} viewers and tools will display such a gap. To make things even
 % worse, the effect depends on the viewers' current magnification.
@@ -1065,7 +1067,7 @@ and the derived files           pxpic.pdf
 % \end{tabular}
 % \endgroup
 %
-% \paragraph{Exploiting the \texttt{gap-hack} to draw a grid:}
+% \subsubsection{Exploiting the gap-hack to draw a grid}
 % It is possible to exploit the |gap-hack| option to draw a grid around your
 % pixels (at least for a rectangular picture). For this we simply set a coloured
 % background and use a negative |gap-hack| value:\par
@@ -1077,6 +1079,9 @@ and the derived files           pxpic.pdf
 %     {1pt}
 %     {{gwgw}{wgwg}}%
 % \end{example}
+% In general, a negative |gap-hack| allows for some nice effect on occasion --
+% just in case you haven't noticed them yet, have a look at the sectioning
+% headings of this documentation.
 %
 %
 % \end{documentation}^^A=<<
