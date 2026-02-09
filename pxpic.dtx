@@ -911,6 +911,7 @@ and the derived files           pxpic.pdf
 % macros |\pxpicnewmode| or |\pxpicsetmode|.
 %
 % \subsection{Other customisation macros}
+% \vskip-\baselineskip
 %
 % \begin{function}{\pxpicnewmode,\pxpicsetmode}
 %   \begin{syntax}
@@ -956,8 +957,12 @@ and the derived files           pxpic.pdf
 % \end{function}
 %
 % \subsection{Other macros}
+% \vskip-\baselineskip
 %
 % \begin{function}{\px,\pxskip}
+%   \begin{syntax}
+%     \cs{px}
+%   \end{syntax}
 %   Inside of a \CS{pxpic} the macro \cs{px} draws a pixel (of the currently
 %   active colour), and \cs{pxskip} leaves out a pixel (so this one pixel is
 %   fully transparent). Use this in the \meta{definition} of a mode in
@@ -965,6 +970,9 @@ and the derived files           pxpic.pdf
 % \end{function}
 %
 % \begin{variable}{\pxpicHT,\pxpicWD}
+%   \begin{syntax}
+%     \cs{pxpicHT}
+%   \end{syntax}
 %   These two are |dimen| registers storing the height and width of the pixels.
 % \end{variable}
 %
