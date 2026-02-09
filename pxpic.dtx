@@ -125,8 +125,19 @@ and the derived files           pxpic.pdf
 
 \makeatletter
 \@ifdefinable\gobbledocstriptag{\def\gobbledocstriptag#1>{}}
-\makeatother
 
+^^A we want to put the options into the index, so we create a wrapper around
+^^A \item.
+\newcommand*\pxpic@doc@item@kv[2]{\DescribeKey{#1}}
+\NewDocumentCommand\pxpic@doc@item{o}
+  {%
+    \IfNoValueTF{#1}
+      {\pxpic@doc@origitem}%
+      {%
+        \pxpic@doc@origitem[{#1}]%
+        \ekvparse\DescribeKey\pxpic@doc@item@kv{#1}%
+      }%
+  }
 \newenvironment{options}[1][]
   {%
     \begin{description}
@@ -139,8 +150,11 @@ and the derived files           pxpic.pdf
         ,leftmargin=!
         ,#1
       ]%
+    \DeclareCommandCopy\pxpic@doc@origitem\item
+    \DeclareCommandCopy\item\pxpic@doc@item
     \renewenvironment{options}[1][]
       {%
+        \DeclareCommandCopy\item\pxpic@doc@origitem
         \begin{description}
           [
             style=nextline
@@ -154,6 +168,10 @@ and the derived files           pxpic.pdf
       {\end{description}}%
   }
   {\end{description}}
+\makeatother
+
+\NewDocElement[idxgroup = options, envlike, noprint, notoplevel]{Key}{key}
+\NewDocElement[idxgroup = modes, envlike, noprint, notoplevel]{Mode}{mode}
 
 ^^A Logos >>=
 \makeatletter
@@ -862,6 +880,8 @@ and the derived files           pxpic.pdf
 % \subsubsection{Available modes}\label{sec:modes}
 %
 % \begin{options}
+%   ^^A hacky way to reuse the environment for the modes
+%   \let\DescribeKey\DescribeMode
 %   \item[px]
 %     As already mentioned, \pxpicname\ supports different modes of input. The
 %     easiest to use |mode| is |px|, in which each element of the \meta{pixel
