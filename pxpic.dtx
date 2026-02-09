@@ -269,7 +269,6 @@ and the derived files           pxpic.pdf
 ^^A macros and variables >>=
 \int_const:Nn \c__pxpic_font_ht_int { 7 }
 \int_const:Nn \c__pxpic_font_wd_int { 13 }
-\msg_new:nnn { pxpic } { dropped-glyph } { Glyph~ #1~ not~ found. }
 \NewDocumentCommand \pxpicfont { O{} m }
   {
     \tl_if_empty:nF {#2}
@@ -288,7 +287,7 @@ and the derived files           pxpic.pdf
             }
           \mode_leave_vertical:
           \exp_args:Ne \BeginAccSupp{ActualText={ \text_purify:n {#2} }}
-          \text_map_function:nN {#2} \__pxpic_font_glyph:n
+          \use:e { \text_map_function:nN {#2} \__pxpic_font_glyph:n }
           \EndAccSupp{}
         \group_end:
       }
@@ -300,7 +299,7 @@ and the derived files           pxpic.pdf
       {
         \cs_if_exist_use:cF
           { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
-          { \msg_warning:nnn { pxpic } { dropped-glyph } {#1} }
+          { \exp_not:n {#1} }
       }
   }
 
@@ -323,6 +322,12 @@ and the derived files           pxpic.pdf
     \cs_new_protected:cpe
       { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
       { \lower#2\pxpicHT\pxpic { \exp_not:n {#3} } }
+  }
+\cs_new_protected:Npn \__pxpic_font_new_lowered_kerned:nnnn #1#2#3#4
+  {
+    \cs_new_protected:cpe
+      { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
+      { \kern-#3\pxpicWD\lower#2\pxpicHT\pxpic { \exp_not:n {#4} } }
   }
 ^^A =<<
 ^^A glyphs >>=
@@ -362,9 +367,9 @@ and the derived files           pxpic.pdf
 \__pxpic_font_new_lowered:nnn {g} 2 { {.,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,}{.....,;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new:nn {h} { {,;|#|;,}{,;|#|;,}{,;|#|###|;,}{,;|##|;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,} }
 \__pxpic_font_new:nn {i} { {,;|#|;,}{}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
-\__pxpic_font_new_lowered:nnn {j} 2 { {..,;|#|;,}{}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{.,;|#|;,}{,;|#|;,} }
+\__pxpic_font_new_lowered_kerned:nnnn {j} 2 2 { {..,;|#|;,}{}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{.,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new:nn {k} { {,;|#|;,}{,;|#|;,}{,;|#||#|;,}{,;|#|#|;,}{,;|##|;,}{,;|#|#|;,}{,;|#||#|;,} }
-\__pxpic_font_new:nn {l} { {,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;|#|;,}{.,;|###|;,} }
+\__pxpic_font_new:nn {l} { {,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{.,;|##|;,} }
 \__pxpic_font_new:nn {m} { {,;|####|###|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,} }
 \__pxpic_font_new:nn {n} { {,;|#|###|;,}{,;|##|;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,} }
 \__pxpic_font_new:nn {o} { {.,;|####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|####|;,} }
@@ -372,7 +377,7 @@ and the derived files           pxpic.pdf
 \__pxpic_font_new_lowered:nnn {q} 2 { {.,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,}{.....,;|#|;,}{.....,;|#|;,} }
 \__pxpic_font_new:nn {r} { {,;|#|##|;,}{,;|##|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new:nn {s} { {.,;|####|;,}{,;|#|;,}{.,;|####|;,}{.....,;|#|;,}{,;|#####|;,} }
-\__pxpic_font_new:nn {t} { {.,;|#|;,}{,;|####|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;|#|;,}{..,;|###|;,} }
+\__pxpic_font_new:nn {t} { {.,;|#|;,}{,;|####|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{..,;|##|;,} }
 \__pxpic_font_new:nn {u} { {,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {v} { {,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#||#|;,}{.,;|#||#|;,}{..,;|##|;,} }
 \__pxpic_font_new:nn {w} { {,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#||#||#|;,}{,;|#|#|#|#|;,}{.,;|#|;|#|;,} }
@@ -392,23 +397,24 @@ and the derived files           pxpic.pdf
 \__pxpic_font_new:nn {9} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|######|;,}{......,;|#|;,}{......,;|#|;,}{.,;|#####|;,} }
 
 \__pxpic_font_new:nn {.} { {,;|#|;,} }
+\__pxpic_font_new:nn {-} { {,;|#######|;,}{}{}{} }
 ^^A glyphs =<<
 \ExplSyntaxOff
 ^^A % =<<
 
 \usepackage{titlesec}
 \ExpandArgs{c}\titleformat{section}
-  {\normalfont\Large\bfseries}
+  {\normalfont\huge\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesection}\kern12pt}}
   {0pt}
   {\pxpicfont}
 \ExpandArgs{c}\titleformat{subsection}
-  {\normalfont\large\bfseries}
+  {\normalfont\LARGE\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesubsection}\kern12pt}}
   {0pt}
   {\pxpicfont}
 \ExpandArgs{c}\titleformat{subsubsection}
-  {\normalfont\normalsize\bfseries}
+  {\normalfont\Large\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesubsubsection}\kern12pt}}
   {0pt}
   {\pxpicfont}
