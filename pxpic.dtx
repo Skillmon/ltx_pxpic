@@ -251,9 +251,7 @@ and the derived files           pxpic.pdf
     ,initial noindent
   }
 \newenvironment{example}
-  {%
-    \enverb{auto-ignore,more-ignore=0,key-set=pxpic-example}%
-  }
+  {\enverb{auto-ignore,more-ignore=0,key-set=pxpic-example}}
   {%
     \pxpic@example@noindent\noindent\leavevmode
     \pxpic@example@clapped
@@ -273,7 +271,7 @@ and the derived files           pxpic.pdf
           \pxpic@example@precode
           \enverbListing{lstlisting}{}%
         \end{minipage}%
-        \begin{minipage}[c]{\pxpic@example@picwd}
+        \begin{minipage}[c]{\pxpic@example@picwd}%
           \pxpic@example@prepic
           \enverbExecute
         \end{minipage}%
@@ -298,25 +296,25 @@ and the derived files           pxpic.pdf
               ,lines = group
               ,colours = {##=., |=.!60!white, ;=.!30!white, {,}=.!10!white }
               ,skip = .
-              ,size = \fp_eval:n { 1.6ex / \c__pxpic_font_ht_int } pt
-              ,wd = .5\pxpicHT
-              ,gap-hack = -\pxpicHT/4
+              ,ht = \fp_eval:n { 1.5ex / \c__pxpic_font_ht_int } pt
+              ,wd = .48\pxpicHT
+              ,gap-hack = -.25\pxpicHT
               ,#1
             }
           \mode_leave_vertical:
-          \exp_args:Ne \BeginAccSupp{ActualText={ \text_purify:n {#2} }}
+          \rlap { \color { white } #2 }
           \use:e { \text_map_function:nN {#2} \__pxpic_font_glyph:n }
-          \EndAccSupp{}
         \group_end:
       }
   }
 \cs_new:Npn \__pxpic_font_glyph:n #1
   {
     \tl_if_blank:nTF {#1}
-      { \hskip \c__pxpic_font_wd_int \pxpicWD }
+      { \kern-.25\pxpicHT \c_space_token }
       {
-        \cs_if_exist_use:cF
+        \cs_if_exist_use:cTF
           { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
+          { \kern.25\pxpicHT }
           { \exp_not:n {#1} }
       }
   }
@@ -347,12 +345,18 @@ and the derived files           pxpic.pdf
       { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
       { \kern-#3\pxpicWD\lower#2\pxpicHT\pxpic { \exp_not:n {#4} } }
   }
+\cs_new_protected:Npn \__pxpic_font_new_kerned:nnn #1#2#3
+  {
+    \cs_new_protected:cpe
+      { __pxpic_font_ \tl_to_str:n {#1} _glyph: }
+      { \kern-#2\pxpicWD \pxpic { \exp_not:n {#3} } }
+  }
 ^^A =<<
 ^^A glyphs >>=
 \__pxpic_font_new:nn {A} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#######|;,}{,;|#|;,;|#|;,} {,;|#|;,;|#|;,}{,;|#|;,;|#|;,} }
 \__pxpic_font_new:nn {B} { {,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|######|;,} }
-\__pxpic_font_new:nn {C} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
-\__pxpic_font_new:nn {D} { {,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|######|;,} }
+\__pxpic_font_new:nn {C} { {..,;|#######|;,}{.,;|#|;,.,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{.,;|#|;,.,;|#|;,}{..,;|#######|;,} }
+\__pxpic_font_new:nn {D} { {,;|########|;,}{,;|#|;,.,;|#|;,}{,;|#|;,..,;|#|;,}{,;|#|;,..,;|#|;,}{,;|#|;,..,;|#|;,}{,;|#|;,.,;|#|;,}{,;|########|;,} }
 \__pxpic_font_new:nn {E} { {,;|######|;,}{,;|#|;,}{,;|#|;,}{,;|####|;,}{,;|#|;,}{,;|#|;,}{,;|######|;,} }
 \__pxpic_font_new:nn {F} { {,;|######|;,}{,;|#|;,}{,;|#|;,}{,;|####|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new:nn {G} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,}{,;|#|;|###|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
@@ -361,9 +365,9 @@ and the derived files           pxpic.pdf
 \__pxpic_font_new:nn {J} { {......,;|#|;,}{......,;|#|;,}{......,;|#|;,}{......,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {K} { {,;|#|;,;|#|;,}{,;|#|;;|#|;,}{,;|#|;|#|;,}{,;|####|;,}{,;|#|;|#|;,}{,;|#|;;|#|;,}{,;|#|;,;|#|;,} }
 \__pxpic_font_new:nn {L} { {,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|######|;,} }
-\__pxpic_font_new:nn {M} { {,;|#|;,...,;|#|;,}{,;|##|;,.,;|##|;,}{,;|#|#|;,;|#|#|;,}{,;|#||#|;|#||#|;,}{,;|#|;|#|#|;|#|;,}{,;|#|;;|#|;;|#|;,}{,;|#|;,...,;|#|;,} }
+\__pxpic_font_new:nn {M} {{,;|#|;,.....,;|#|;,}{,;|##|;,...,;|##|;,}{,;|#|#|;,.,;|#|#|;,}{,;|#||#|;,;|#||#|;,}{,;|#|;|#|;|#|;|#|;,}{,;|#|;;|#|#|;;|#|;,}{,;|#|;,;|#|;,;|#|;,} }
 \__pxpic_font_new:nn {N} { {,;|#|;,;|#|;,}{,;|##|;;|#|;,}{,;|#|#|;|#|;,}{,;|#||#||#|;,}{,;|#|;|#|#|;,}{,;|#|;;|##|;,}{,;|#|;,;|#|;,} }
-\__pxpic_font_new:nn {O} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
+\__pxpic_font_new:nn {O} { {..,;|#######|;,}{.,;|#|;,.,;|#|;,}{,;|#|;,...,;|#|;,}{,;|#|;,...,;|#|;,}{,;|#|;,...,;|#|;,}{.,;|#|;,.,;|#|;,}{..,;|#######|;,} }
 \__pxpic_font_new:nn {P} { {,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|######|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new_lowered:nnn {Q} 2 { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,}{....,;|#|;,}{.....,;|##|;,} }
 \__pxpic_font_new:nn {R} { {,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|######|;,}{,;|#|;;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,} }
@@ -376,38 +380,38 @@ and the derived files           pxpic.pdf
 \__pxpic_font_new:nn {Y} { {,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,}{...,;|#|;,}{...,;|#|;,}{...,;|#|;,} }
 \__pxpic_font_new:nn {Z} { {,;|#####|;,}{....,;|#|;,}{...,;|#|;,}{..,;|#|;,}{.,;|#|;,}{,;|#|;,}{,;|#####|;,} }
 
-\__pxpic_font_new:nn {a} { {.,;|####|;,}{.....,;|#|;,}{.,;|#####|;,}{,;|#|;;|#|;,}{.,;|#####|;,} }
+\__pxpic_font_new_kerned:nnn {a} 1 { {.,;|####|;,}{.....,;|#|;,}{.,;|#####|;,}{,;|#|;;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {b} { {,;|#|;,}{,;|#|;,}{,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#####|;,} }
 \__pxpic_font_new:nn {c} { {.,;|####|;,}{,;|#|;;|#|;,}{,;|#|;,}{,;|#|;;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new:nn {d} { {.....,;|#|;,}{.....,;|#|;,}{.,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,} }
-\__pxpic_font_new:nn {e} { {.,;|####|;,}{,;|#|;;|#|;,}{,;|######|;,}{,;|#|;,}{.,;|#####|;,} }
+\__pxpic_font_new:nn {e} { {.,;|###|;,}{,;|#|;|#|;,}{,;|#####|;,}{,;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new_lowered:nnn {f} 2 { {..,;|###|;,}{.,;|#|;|#|;,}{.,;|#|;,}{.,;|#|;,}{,;|#####|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,} }
 \__pxpic_font_new_lowered:nnn {g} 2 { {.,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,}{.....,;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new:nn {h} { {,;|#|;,}{,;|#|;,}{,;|#|###|;,}{,;|##|;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,} }
 \__pxpic_font_new:nn {i} { {,;|#|;,}{}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new_lowered_kerned:nnnn {j} 2 2 { {..,;|#|;,}{}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{.,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new:nn {k} { {,;|#|;,}{,;|#|;,}{,;|#||#|;,}{,;|#|#|;,}{,;|##|;,}{,;|#|#|;,}{,;|#||#|;,} }
-\__pxpic_font_new:nn {l} { {,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{.,;|##|;,} }
-\__pxpic_font_new:nn {m} { {,;|####|###|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,}{,;|#|;|#|;|#|;,} }
+\__pxpic_font_new:nn {l} { {,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,}{.,;|#|;,} }
+\__pxpic_font_new:nn {m} { {,;|#|####||####|;,}{,;|##|;;|##|;;|#|;,}{,;|#|;,;|#|;,;|#|;,}{,;|#|;,;|#|;,;|#|;,}{,;|#|;,;|#|;,;|#|;,} }
 \__pxpic_font_new:nn {n} { {,;|#|###|;,}{,;|##|;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,} }
 \__pxpic_font_new:nn {o} { {.,;|####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new_lowered:nnn {p} 2 { {,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#####|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new_lowered:nnn {q} 2 { {.,;|#####|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,}{.....,;|#|;,}{.....,;|#|;,} }
-\__pxpic_font_new:nn {r} { {,;|#|##|;,}{,;|##|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
+\__pxpic_font_new:nn {r} { {,;|#|#|;,}{,;|##|;,}{,;|#|;,}{,;|#|;,}{,;|#|;,} }
 \__pxpic_font_new:nn {s} { {.,;|####|;,}{,;|#|;,}{.,;|####|;,}{.....,;|#|;,}{,;|#####|;,} }
-\__pxpic_font_new:nn {t} { {.,;|#|;,}{,;|####|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{..,;|##|;,} }
+\__pxpic_font_new_kerned:nnn {t} 1 { {.,;|#|;,}{,;|###|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{.,;|#|;,}{..,;|#|;,} }
 \__pxpic_font_new:nn {u} { {,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {v} { {,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#||#|;,}{.,;|#||#|;,}{..,;|##|;,} }
-\__pxpic_font_new:nn {w} { {,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#||#||#|;,}{,;|#|#|#|#|;,}{.,;|#|;|#|;,} }
+\__pxpic_font_new:nn {w} { {,;|#|;,.....,;|#|;,}{.,;|#|;,...,;|#|;,}{..,;|#|,|#|,|#|;,}{...,;|#|#|#|#|;,}{....,;|#|;|#|;,} }
 \__pxpic_font_new:nn {x} { {,;|#|;|#|;,}{.,;|#|#|;,}{..,;|#|;,}{.,;|#|#|;,}{,;|#|;|#|;,} }
 \__pxpic_font_new_lowered:nnn {y} 2 { {,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{,;|#|;;|#|;,}{.,;|#####|;,}{.....,;|#|;,}{.,;|####|;,} }
 \__pxpic_font_new:nn {z} { {,;|#####|;,}{...,;|#|;,}{..,;|#|;,}{.,;|#|;,}{,;|#####|;,} }
 
 \__pxpic_font_new:nn {0} { {.,;|#####|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#||#||#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {1} { {..,;|#|;,}{.,;|##|;,}{,;|#|#|;,}{..,;|#|;,}{..,;|#|;,}{..,;|#|;,}{,;|#####|;,} }
-\__pxpic_font_new:nn {2} { {.,;|#####|;,}{,;|#|;,;|#|;,}{.....,;|##|;,}{..,;|####|;,}{.,;|#|;,}{,;|#|;,}{,;|#######|;,} }
+\__pxpic_font_new:nn {2} { {.,;|####|;,}{,;|#|;;|#|;,}{....,;|##|;,}{..,;|###|;,}{.,;|#|;,}{,;|#|;,}{,;|######|;,} }
 \__pxpic_font_new:nn {3} { {.,;|#####|;,}{,;|#|;,;|#|;,}{......,;|#|;,}{...,;|###|;,}{......,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
-\__pxpic_font_new:nn {4} { {,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|######|;,}{......,;|#|;,}{......,;|#|;,}{......,;|#|;,} }
+\__pxpic_font_new:nn {4} { {..,;|#||#|;,.}{.,;|#|;|#|;,.}{,;|#|;;|#|;,.}{,;|#######|;,}{.....,;|#|;,.}{.....,;|#|;,.}{.....,;|#|;,.} }
 \__pxpic_font_new:nn {5} { {,;|#######|;,}{,;|#|;,}{,;|#|;,}{,;|######|;,}{......,;|#|;,}{......,;|#|;,}{,;|######|;,} }
 \__pxpic_font_new:nn {6} { {..,;|####|;,}{.,;|#|;,}{,;|#|;,}{,;|######|;,}{,;|#|;,;|#|;,}{,;|#|;,;|#|;,}{.,;|#####|;,} }
 \__pxpic_font_new:nn {7} { {,;|#######|;,}{......,;|#|;,}{.....,;|#|;,}{....,;|#|;,}{...,;|#|;,}{..,;|#|;,}{.,;|#|;,} }
@@ -422,17 +426,17 @@ and the derived files           pxpic.pdf
 
 \usepackage{titlesec}
 \ExpandArgs{c}\titleformat{section}
-  {\normalfont\huge\bfseries}
+  {\normalfont\Huge\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesection}\kern12pt}}
   {0pt}
   {\pxpicfont}
 \ExpandArgs{c}\titleformat{subsection}
-  {\normalfont\LARGE\bfseries}
+  {\normalfont\huge\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesubsection}\kern12pt}}
   {0pt}
   {\pxpicfont}
 \ExpandArgs{c}\titleformat{subsubsection}
-  {\normalfont\Large\bfseries}
+  {\normalfont\LARGE\bfseries}
   {\leavevmode\llap{\pxpicfont{\thesubsubsection}\kern12pt}}
   {0pt}
   {\pxpicfont}
@@ -467,7 +471,7 @@ and the derived files           pxpic.pdf
 %   \pxpic
 %     [
 %        colours=
-%         {R=red!40!black,r=red!65!black,#=red!20!black,G=green!50!black,g=green!65!black}
+%         {R=red!40!black,r=red!65!black,#=red!20!black,G=green!40!black,g=green!50!black}
 %       ,skip=., lines=space, size=2pt, c
 %     ]
 %     {
@@ -1070,10 +1074,15 @@ and the derived files           pxpic.pdf
 % \subsubsection{Exploiting the gap-hack to draw a grid}
 % It is possible to exploit the |gap-hack| option to draw a grid around your
 % pixels (at least for a rectangular picture). For this we simply set a coloured
-% background and use a negative |gap-hack| value:\par
+% background and use a negative |gap-hack| value:
+%
 % \begin{example}[prepic=]
 %   \newcommand\gridpxpic[3][]
-%     {{\setlength\fboxsep{#2}\colorbox{black}{\pxpic[gap-hack=-\fboxsep,#1]{#3}}}}
+%     {{%
+%       \setlength\fboxsep{#2}%
+%       \colorbox{black}
+%         {\pxpic[gap-hack=-\fboxsep,#1]{#3}}%
+%     }}
 %   \gridpxpic
 %     [colours={g=green,w=white},size=8pt]
 %     {1pt}
